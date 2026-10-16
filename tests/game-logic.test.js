@@ -87,6 +87,16 @@ test('salva e restaura progresso com validação defensiva', () => {
   assert.equal(loadState(storage, 1000).xp, 0);
 });
 
+test('salva identificadores de vidas compradas para impedir crédito duplicado', () => {
+  const map = new Map();
+  const storage = { getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, value) };
+  const grantId = '123e4567-e89b-12d3-a456-426614174000';
+  const state = { ...createInitialState(1000), claimedLifeGrants: [grantId, 'invalid'] };
+  saveState(storage, state);
+  assert.deepEqual(loadState(storage, 1000).claimedLifeGrants, [grantId]);
+  assert.equal(saveState(null, state), false, 'não pode confirmar uma recompensa sem salvamento persistente');
+});
+
 test('registra erros e agenda a primeira revisão espaçada sem mutar estado anterior', () => {
   const now = 10_000;
   const state = createInitialState(now);

@@ -27,7 +27,7 @@ export function shuffleWords(words, random = Math.random) {
 }
 
 export function createInitialState(now = Date.now()) {
-  return { version: 1, language: 'en', currentLesson: 0, xp: 0, coins: 0, energy: MAX_ENERGY, energyUpdatedAt: now, highestRewardedLevel: 1, streakDays: 0, completed: {}, mistakes: {}, reviewHistory: {}, lastPlayedDate: null };
+  return { version: 1, language: 'en', currentLesson: 0, xp: 0, coins: 0, energy: MAX_ENERGY, energyUpdatedAt: now, highestRewardedLevel: 1, streakDays: 0, completed: {}, mistakes: {}, reviewHistory: {}, claimedLifeGrants: [], lastPlayedDate: null };
 }
 
 export function getPlayerLevel(xp = 0) {
@@ -123,6 +123,9 @@ export function loadState(storage, now = Date.now()) {
     safe.completed = safe.completed && typeof safe.completed === 'object' ? safe.completed : {};
     safe.mistakes = safe.mistakes && typeof safe.mistakes === 'object' ? safe.mistakes : {};
     safe.reviewHistory = safe.reviewHistory && typeof safe.reviewHistory === 'object' ? safe.reviewHistory : {};
+    safe.claimedLifeGrants = Array.isArray(safe.claimedLifeGrants)
+      ? safe.claimedLifeGrants.filter(id => typeof id === 'string' && /^[0-9a-f-]{36}$/i.test(id))
+      : [];
     return restoreEnergy(safe, now);
   } catch {
     return createInitialState(now);
@@ -130,7 +133,8 @@ export function loadState(storage, now = Date.now()) {
 }
 
 export function saveState(storage, state) {
-  try { storage?.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }
+  if (!storage || typeof storage.setItem !== 'function') return false;
+  try { storage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }
   catch { return false; }
 }
 

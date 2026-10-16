@@ -2,6 +2,7 @@ import { LANGUAGES, PHRASES } from './phrases.js';
 import { MAX_ENERGY, ENERGY_RECHARGE_MS, LIFE_REFILL_COST, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview, getPlayerLevel, awardLessonCompletion, purchaseLife, rewardLifeForAd, restoreEnergy } from './game-logic.js';
 import { createGoogleRewardedAds } from './rewarded-ads.js';
 import { speak } from './speech.js';
+import { acknowledgeLifeGrant, createCoinCheckout, getPaymentConfig, getPaymentStatus, getPendingLifeGrants, getPurchasedCoinBalance, spendPurchasedCoinsOnLife } from './payments.js';
 
 const $ = id => document.getElementById(id);
 const rewardedAds = createGoogleRewardedAds(window.LingoPulseAdsConfig);
@@ -22,6 +23,9 @@ let lastSelectedAnswer = [];
 let reviewQueue = [];
 let reviewQueueIndex = 0;
 let rewardedAdInProgress = false;
+let purchasedCoinBalance = 0;
+let paymentsEnabled = false;
+let checkoutInProgress = false;
 
 const WORD_MEANINGS = {
   en: { I: 'eu', like: 'gosto', coffee: 'café', Good: 'bom/boa', morning: 'manhã', Where: 'onde', is: 'é/está', the: 'o/a', station: 'estação', need: 'preciso', help: 'ajuda', Thank: 'agradecer', you: 'você', very: 'muito', much: 'muito', bill: 'conta', please: 'por favor', am: 'estou', learning: 'aprendendo', How: 'quanto/como', does: 'auxiliar da pergunta', it: 'isso', cost: 'custar', Nice: 'prazer/agradável', to: 'a/para', meet: 'conhecer', See: 'ver/até', tomorrow: 'amanhã' },
@@ -55,11 +59,12 @@ function applyLanguageTheme() {
   $('country-banner').setAttribute('aria-label', `Tema cultural: ${theme.country}. ${theme.caption}`);
   document.querySelector('meta[name="theme-color"]').content = theme.color;
 }
-function persist() { state.currentLesson = Math.max(0, Math.min(phraseIndex, currentPhrases().length - 1)); saveState(storage, state); renderStats(); renderReviewCount(); }
+function persist() { state.currentLesson = Math.max(0, Math.min(phraseIndex, currentPhrases().length - 1)); const saved = saveState(storage, state); renderStats(); renderReviewCount(); return saved; }
 function renderStats() {
   const progress = getPlayerLevel(state.xp);
   $('xp-value').textContent = `${state.xp} XP`;
-  $('coins-value').textContent = state.coins;
+  const totalCoins = state.coins + purchasedCoinBalance;
+  $('coins-value').textContent = totalCoins;
   $('energy-value').textContent = `${state.energy}/${MAX_ENERGY} vidas`;
   $('level-value').textContent = progress.level;
   $('xp-progress-fill').style.width = `${progress.progressXp}%`;
@@ -78,9 +83,9 @@ function renderStats() {
   $('lives-timer').hidden = state.energy >= MAX_ENERGY;
   $('lives-timer').textContent = msUntilLife ? `+1 em ${formatCountdown(msUntilLife)}` : 'Vida disponível';
   $('lives-open-button').setAttribute('aria-label', `${state.energy} de ${MAX_ENERGY} vidas. Abrir loja para recuperar uma vida por ${LIFE_REFILL_COST} moedas.`);
-  $('shop-balance').textContent = `Seu saldo: ${state.coins} LingoCoins`;
+  $('shop-balance').textContent = `Saldo: ${state.coins} moedas de jogo + ${purchasedCoinBalance} moedas compradas`;
   $('life-refill-cost').textContent = LIFE_REFILL_COST;
-  $('buy-life-button').disabled = state.energy >= MAX_ENERGY || state.coins < LIFE_REFILL_COST;
+  $('buy-life-button').disabled = state.energy >= MAX_ENERGY || (state.coins < LIFE_REFILL_COST && purchasedCoinBalance < LIFE_REFILL_COST);
   const adButton = $('watch-ad-button');
   const adProviderReady = rewardedAds.isReady();
   adButton.disabled = state.energy >= MAX_ENERGY || !adProviderReady || rewardedAdInProgress;
@@ -95,16 +100,81 @@ function formatCountdown(milliseconds) {
 }
 function openDialog(id) { const dialog = $(id); if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); }
 function closeDialog(id) { const dialog = $(id); if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open'); }
-function openShop() { $('shop-feedback').hidden = true; renderStats(); openDialog('shop-dialog'); }
-function buyLife() {
-  const purchase = purchaseLife(state, Date.now());
+function openShop() {
+  $('shop-feedback').hidden = true;
+  $('coin-pack-feedback').hidden = true;
+  document.querySelectorAll('.coin-pack').forEach(card => {
+    card.classList.remove('selected');
+    card.querySelector('[data-coin-pack]')?.setAttribute('aria-pressed', 'false');
+  });
+  renderStats();
+  openDialog('shop-dialog');
+}
+async function selectCoinPack(button) {
+  if (checkoutInProgress) return;
+  const selectedCard = button.closest('.coin-pack');
+  document.querySelectorAll('.coin-pack').forEach(card => {
+    const selected = card === selectedCard;
+    card.classList.toggle('selected', selected);
+    card.querySelector('[data-coin-pack]')?.setAttribute('aria-pressed', String(selected));
+  });
+  const feedback = $('coin-pack-feedback');
+  if (!paymentsEnabled) {
+    feedback.textContent = 'O checkout ainda não está pronto. Conclua a configuração segura do Mercado Pago e do banco de dados no servidor.';
+    feedback.hidden = false;
+    return;
+  }
+  checkoutInProgress = true;
+  button.disabled = true;
+  feedback.textContent = `Preparando o checkout Mercado Pago para ${button.dataset.packName} (${button.dataset.coins} LingoCoins)…`;
+  feedback.hidden = false;
+  try {
+    const checkout = await createCoinCheckout(button.dataset.packId);
+    window.location.assign(checkout.checkoutUrl);
+  } catch (error) {
+    feedback.textContent = error.message;
+    feedback.className = 'payment-notice bad';
+    checkoutInProgress = false;
+    button.disabled = false;
+  }
+}
+async function buyLife() {
+  let purchase = purchaseLife(state, Date.now());
+  const feedback = $('shop-feedback');
+  if (!purchase.ok && purchase.reason === 'coins' && purchasedCoinBalance >= LIFE_REFILL_COST) {
+    $('buy-life-button').disabled = true;
+    feedback.textContent = 'Confirmando o uso das LingoCoins compradas…';
+    feedback.className = 'feedback';
+    feedback.hidden = false;
+    try {
+      const result = await spendPurchasedCoinsOnLife();
+      purchasedCoinBalance = Number(result.purchasedCoins) || 0;
+      if (!/^[0-9a-f-]{36}$/i.test(result.lifeGrantId || '')) throw new Error('Compra confirmada; estamos recuperando sua vida. Atualize seu saldo em instantes.');
+      const applied = await applyLifeGrant(result.lifeGrantId);
+      feedback.textContent = applied
+        ? 'Vida recuperada com LingoCoins compradas. Boa prática!'
+        : 'As moedas foram debitadas e a vida ficou guardada. Ela será aplicada assim que houver espaço entre suas vidas.';
+      feedback.className = applied ? 'feedback good' : 'feedback';
+      feedback.hidden = false;
+      return;
+    } catch (error) {
+      try {
+        const balance = await getPurchasedCoinBalance();
+        purchasedCoinBalance = Number(balance.purchasedCoins) || 0;
+      } catch { purchasedCoinBalance = 0; }
+      feedback.textContent = error.message;
+      feedback.className = 'feedback bad';
+      feedback.hidden = false;
+      persist();
+      return;
+    }
+  }
   state = purchase.state;
   persist();
-  const feedback = $('shop-feedback');
   if (!purchase.ok) {
     const message = purchase.reason === 'full'
       ? 'Você já está com todas as vidas. Guarde suas moedas para quando precisar.'
-      : `Você precisa de ${LIFE_REFILL_COST} moedas para recuperar uma vida. Complete novas lições para ganhar mais.`;
+      : `Você precisa de ${LIFE_REFILL_COST} moedas para recuperar uma vida. Complete novas lições ou compre um pacote.`;
     feedback.textContent = message;
     feedback.className = 'feedback bad';
     feedback.hidden = false;
@@ -119,6 +189,131 @@ function buyLife() {
     $('check-button').textContent = 'Conferir resposta →';
     renderBank();
   }
+}
+
+async function refreshPurchasedCoinBalance() {
+  const balance = await getPurchasedCoinBalance();
+  purchasedCoinBalance = Math.max(0, Number(balance.purchasedCoins) || 0);
+  renderStats();
+}
+
+async function applyLifeGrant(grantId) {
+  if (!/^[0-9a-f-]{36}$/i.test(grantId || '')) return false;
+  const claimed = Array.isArray(state.claimedLifeGrants) ? state.claimedLifeGrants : [];
+  if (claimed.includes(grantId)) {
+    try { await acknowledgeLifeGrant(grantId); } catch { /* Será confirmado novamente ao abrir o app. */ }
+    return true;
+  }
+
+  const now = Date.now();
+  const restored = restoreEnergy(state, now);
+  if (restored.energy >= MAX_ENERGY) {
+    state = restored;
+    persist();
+    return false;
+  }
+
+  const previousState = state;
+  state = {
+    ...restored,
+    energy: restored.energy + 1,
+    energyUpdatedAt: restored.energy === 0 ? now : restored.energyUpdatedAt,
+    claimedLifeGrants: [...claimed, grantId]
+  };
+  if (!persist()) {
+    state = previousState;
+    persist();
+    return false;
+  }
+
+  try { await acknowledgeLifeGrant(grantId); } catch { /* A marca local impede crédito duplicado na próxima tentativa. */ }
+  if (stage === 'puzzle') {
+    $('check-button').disabled = false;
+    $('check-button').textContent = 'Conferir resposta →';
+    renderBank();
+  }
+  return true;
+}
+
+async function reconcilePendingLifeGrants() {
+  if (!paymentsEnabled) return;
+  try {
+    const response = await getPendingLifeGrants();
+    for (const grant of response.grants || []) {
+      const applied = await applyLifeGrant(grant.id);
+      if (!applied && restoreEnergy(state, Date.now()).energy >= MAX_ENERGY) break;
+    }
+  } catch { /* A próxima abertura, uso da loja ou perda de vida tentará novamente. */ }
+}
+
+function wait(milliseconds) { return new Promise(resolve => window.setTimeout(resolve, milliseconds)); }
+
+async function handlePaymentReturn() {
+  const url = new URL(window.location.href);
+  const paymentResult = url.searchParams.get('payment');
+  const orderId = url.searchParams.get('order_id');
+  if (!paymentResult) return;
+  openDialog('shop-dialog');
+  const feedback = $('shop-feedback');
+  feedback.className = 'feedback';
+  feedback.hidden = false;
+  if (paymentResult === 'failure') {
+    feedback.textContent = 'O pagamento não foi concluído. Nenhuma moeda foi adicionada.';
+  } else if (orderId) {
+    feedback.textContent = 'Verificando a confirmação do Mercado Pago…';
+    let complete = false;
+    for (let attempt = 0; attempt < 15; attempt++) {
+      try {
+        const status = await getPaymentStatus(orderId);
+        if (status.status === 'approved') {
+          await refreshPurchasedCoinBalance();
+          feedback.textContent = `${status.coins} LingoCoins foram adicionadas ao seu saldo.`;
+          feedback.className = 'feedback good';
+          complete = true;
+          break;
+        }
+        if (status.status === 'refunded' || status.status === 'checkout_error') {
+          feedback.textContent = status.status === 'refunded' ? 'Esse pagamento foi estornado.' : 'Não foi possível concluir o checkout.';
+          feedback.className = 'feedback bad';
+          complete = true;
+          break;
+        }
+      } catch { /* Mantém a consulta até o webhook confirmar ou o prazo terminar. */ }
+      if (attempt < 14) await wait(2000);
+    }
+    if (!complete) feedback.textContent = 'O pagamento ainda está sendo confirmado. O saldo será atualizado quando o Mercado Pago notificar o servidor.';
+  } else {
+    feedback.textContent = 'O Mercado Pago retornou sem identificar o pedido. Consulte seu saldo novamente em instantes.';
+  }
+  url.searchParams.delete('payment');
+  url.searchParams.delete('order_id');
+  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+async function initializePayments() {
+  const notice = $('payment-config-notice');
+  try {
+    const config = await getPaymentConfig();
+    paymentsEnabled = config.enabled === true;
+    document.querySelectorAll('[data-coin-pack]').forEach(button => {
+      const pack = config.packs?.find(item => item.id === button.dataset.packId);
+      const price = button.closest('.coin-pack').querySelector('.coin-pack-price');
+      if (pack && price) price.textContent = pack.price;
+      button.disabled = !paymentsEnabled;
+      button.textContent = paymentsEnabled && pack ? `Comprar · ${pack.price}` : 'Configuração pendente';
+    });
+    notice.textContent = paymentsEnabled
+      ? 'Checkout seguro Mercado Pago. As moedas entram no saldo após a confirmação do pagamento.'
+      : 'Pacotes definidos. Para habilitar compras, configure Mercado Pago, Supabase e as variáveis seguras na Vercel.';
+    if (paymentsEnabled) {
+      await refreshPurchasedCoinBalance();
+      await reconcilePendingLifeGrants();
+    }
+  } catch {
+    paymentsEnabled = false;
+    notice.textContent = 'Não foi possível verificar o serviço de pagamentos. As compras permanecem desativadas.';
+  }
+  await handlePaymentReturn();
 }
 async function watchAdForLife() {
   if (rewardedAdInProgress || state.energy >= MAX_ENERGY) return;
@@ -331,6 +526,7 @@ function checkAnswer() {
     state.energy = Math.max(0, state.energy - 1); state.energyUpdatedAt = Date.now();
     state = recordMistake(state, currentPhrase().id, currentPhrase().answer, answerWords, Date.now());
     persist();
+    void reconcilePendingLifeGrants();
     const correct = targetText();
     showFeedback(`Ainda não. Sua resposta foi “${answerWords.join(' ')}”. A expressão correta é “${correct}”. ${currentPhrase().hint} Você pode corrigir e tentar novamente; cada tentativa incorreta no desafio consome 1 energia.`, false);
     if (state.energy <= 0) {
@@ -416,6 +612,7 @@ $('shop-open-button').addEventListener('click', openShop);
 $('lives-open-button').addEventListener('click', openShop);
 $('buy-life-button').addEventListener('click', buyLife);
 $('watch-ad-button').addEventListener('click', watchAdForLife);
+document.querySelectorAll('[data-coin-pack]').forEach(button => button.addEventListener('click', () => selectCoinPack(button)));
 document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
 $('back-to-learning-button').addEventListener('click', () => { renderLearn(); setStage('learn'); });
 $('language-select').addEventListener('change', event => { state.language = LANGUAGES[event.target.value] ? event.target.value : 'en'; applyLanguageTheme(); phraseIndex = 0; persist(); startLesson(true); });
@@ -423,7 +620,7 @@ $('restart-button').addEventListener('click', () => { $('result-dialog').close()
 $('reset-button').addEventListener('click', () => { if (window.confirm('Quer apagar seu XP, moedas, energia e histórico deste navegador?')) { state = createInitialState(); persist(); startLesson(true); } });
 $('answer-slots').addEventListener('dragover', event => event.preventDefault());
 $('answer-slots').addEventListener('drop', event => { event.preventDefault(); const id = event.dataTransfer?.getData('text/plain'); if (id) addWord(id); });
-window.addEventListener('focus', () => { state = loadState(storage); persist(); });
+window.addEventListener('focus', () => { state = loadState(storage); persist(); void reconcilePendingLifeGrants(); });
 window.setInterval(() => {
   const previousEnergy = state.energy;
   state = restoreEnergy(state, Date.now());
@@ -433,3 +630,4 @@ window.setInterval(() => {
 $('language-select').value = LANGUAGES[state.language] ? state.language : 'en';
 applyLanguageTheme();
 renderStats(); renderReviewCount(); renderLearn(); setStage('learn');
+initializePayments();

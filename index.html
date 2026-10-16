@@ -93,7 +93,7 @@
     </section>
 
     <section class="bottom-row" aria-label="Como funciona o aprendizado"><div class="mini-card"><span aria-hidden="true">📖</span><div><strong>Aprenda com contexto</strong><p>Significado, vocabulário, exemplos e pronúncia antes do desafio.</p></div></div><div class="mini-card"><span aria-hidden="true">🧠</span><div><strong>Revise no momento certo</strong><p>Se errar, a expressão volta para revisão espaçada.</p></div></div></section>
-    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.2</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
+    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.4</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
   </main>
   <dialog id="result-dialog" class="result-dialog" aria-labelledby="result-title"><div class="result-content"><div class="result-icon" aria-hidden="true">🏆</div><p class="eyebrow">TRILHA CONCLUÍDA</p><h2 id="result-title">Você mandou bem!</h2><p id="result-summary">Você concluiu a trilha.</p><div class="result-rewards"><span>⚡ <strong id="result-xp">0 XP</strong></span><span>🟡 <strong id="result-coins">0 moedas</strong></span></div><button id="restart-button" class="primary-button" type="button">Recomeçar trilha</button></div></dialog>
   <dialog id="level-dialog" class="resource-dialog" aria-labelledby="level-dialog-title">
@@ -108,11 +108,11 @@
       <article class="shop-item"><span class="shop-item-icon" aria-hidden="true">♥</span><div><h3>Comprar 1 vida</h3><p>Use suas LingoCoins para continuar praticando. As vidas também recarregam com o tempo.</p><strong>🟡 <span id="life-refill-cost">15</span> moedas</strong></div><button id="buy-life-button" class="primary-button shop-buy-button" type="button">Comprar com moedas</button></article>
     </section>
     <p id="shop-feedback" class="feedback" role="status" aria-live="polite" hidden></p>
-    <section class="coin-pack-section" aria-labelledby="coin-pack-title"><div class="coin-pack-heading"><div><h3 id="coin-pack-title">Pacotes de LingoCoins</h3><p>Uma forma rápida de voltar ao jogo e continuar estudando.</p></div><span aria-hidden="true">🟡</span></div><div class="coin-pack-grid">
-      <article class="coin-pack"><span class="coin-pack-name">Inicial</span><strong>50 <small>moedas</small></strong><button type="button" disabled aria-label="Pacote Inicial: compra em breve">Em breve</button></article>
-      <article class="coin-pack featured"><span class="coin-pack-name">Prática</span><strong>150 <small>moedas</small></strong><button type="button" disabled aria-label="Pacote Prática: compra em breve">Em breve</button></article>
-      <article class="coin-pack"><span class="coin-pack-name">Imersão</span><strong>400 <small>moedas</small></strong><button type="button" disabled aria-label="Pacote Imersão: compra em breve">Em breve</button></article>
-    </div><p class="payment-notice">Compras reais serão ativadas após a configuração do provedor de pagamento e da validação segura. Nenhuma cobrança é feita nesta versão.</p></section>
+    <section class="coin-pack-section" aria-labelledby="coin-pack-title"><div class="coin-pack-heading"><div><h3 id="coin-pack-title">Pacotes de LingoCoins</h3><p>Escolha o tamanho do pacote que gostaria de comprar.</p></div><span aria-hidden="true">🟡</span></div><div class="coin-pack-grid">
+      <article class="coin-pack"><span class="coin-pack-name">Inicial</span><strong>50 <small>moedas</small></strong><span class="coin-pack-price">R$ 4,90</span><button type="button" data-coin-pack data-pack-id="starter" data-pack-name="Inicial" data-coins="50" aria-pressed="false" disabled>Comprar</button></article>
+      <article class="coin-pack featured"><span class="coin-pack-name">Prática</span><strong>150 <small>moedas</small></strong><span class="coin-pack-price">R$ 9,90</span><button type="button" data-coin-pack data-pack-id="practice" data-pack-name="Prática" data-coins="150" aria-pressed="false" disabled>Comprar</button></article>
+      <article class="coin-pack"><span class="coin-pack-name">Imersão</span><strong>400 <small>moedas</small></strong><span class="coin-pack-price">R$ 19,90</span><button type="button" data-coin-pack data-pack-id="immersion" data-pack-name="Imersão" data-coins="400" aria-pressed="false" disabled>Comprar</button></article>
+    </div><p id="coin-pack-feedback" class="payment-notice" role="status" aria-live="polite" hidden></p><p id="payment-config-notice" class="payment-notice">Compras por Mercado Pago. Os pacotes ficam associados ao navegador atual.</p></section>
     <div class="economy-note"><strong>Como ganhar moedas</strong><p>Ganhe 5 moedas ao concluir cada expressão pela primeira vez e 15 moedas extras ao subir de nível.</p></div>
   </dialog>
   <script src="js/ads-config.js"></script>

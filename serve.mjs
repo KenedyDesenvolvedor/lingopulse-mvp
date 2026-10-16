@@ -21,19 +21,45 @@ const contentTypes = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-const server = createServer((request, response) => {
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
-    response.writeHead(405, { Allow: 'GET, HEAD', 'Content-Type': 'text/plain; charset=utf-8' });
-    response.end('Método não permitido.');
-    return;
-  }
+const apiRoutes = new Map([
+  ['/api/payment-config', './api/payment-config.js'],
+  ['/api/wallet', './api/wallet.js'],
+  ['/api/create-payment', './api/create-payment.js'],
+  ['/api/payment-status', './api/payment-status.js'],
+  ['/api/spend-coins', './api/spend-coins.js'],
+  ['/api/life-grants', './api/life-grants.js'],
+  ['/api/ack-life-grant', './api/ack-life-grant.js'],
+  ['/api/mercadopago-webhook', './api/mercadopago-webhook.js'],
+]);
 
+const server = createServer(async (request, response) => {
   let requestedPath;
+  let requestUrl;
   try {
-    requestedPath = decodeURIComponent(new URL(request.url || '/', 'http://localhost').pathname);
+    requestUrl = new URL(request.url || '/', `http://${host}:${port || 3000}`);
+    requestedPath = decodeURIComponent(requestUrl.pathname);
   } catch {
     response.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
     response.end('Endereço inválido.');
+    return;
+  }
+
+  const apiModule = apiRoutes.get(requestedPath);
+  if (apiModule) {
+    try {
+      const { default: handler } = await import(new URL(apiModule, import.meta.url));
+      await handler(request, response);
+    } catch (error) {
+      console.error('Erro na API local:', error?.message || error);
+      if (!response.headersSent) response.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      if (!response.writableEnded) response.end(JSON.stringify({ error: 'Falha no serviço local.' }));
+    }
+    return;
+  }
+
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    response.writeHead(405, { Allow: 'GET, HEAD', 'Content-Type': 'text/plain; charset=utf-8' });
+    response.end('Método não permitido.');
     return;
   }
 

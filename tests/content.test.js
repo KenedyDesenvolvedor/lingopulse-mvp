@@ -71,7 +71,10 @@ test('XP, moedas e vidas têm progressão, gasto e vitrine de pacotes', () => {
   assert.match(html, /50 <small>moedas<\/small>/);
   assert.match(html, /150 <small>moedas<\/small>/);
   assert.match(html, /400 <small>moedas<\/small>/);
-  assert.match(html, /Nenhuma cobrança é feita nesta versão/);
+  assert.match(html, /R\$ 4,90/);
+  assert.match(html, /R\$ 9,90/);
+  assert.match(html, /R\$ 19,90/);
+  assert.match(html, /Mercado Pago/);
   assert.match(app, /awardLessonCompletion\(state, currentPhrase\(\)\.id\)/);
   assert.match(app, /purchaseLife\(state, Date\.now\(\)\)/);
   assert.match(html, /O anúncio só começa quando você tocar no botão/);
