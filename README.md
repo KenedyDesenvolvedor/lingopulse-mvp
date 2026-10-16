@@ -1,24 +1,48 @@
-# LingoPulse — MVP pedagógico 0.2.4
+# LingoPulse — MVP pedagógico 0.2.5
 
-Protótipo web modular em HTML, CSS e JavaScript puro, sem dependências de runtime. Interface responsiva para celular e desktop.
+Protótipo web modular em HTML, CSS e JavaScript puro. O projeto agora inclui servidor local em Node.js e configuração para publicar os arquivos estáticos na Vercel.
 
-## Executar
+## Executar localmente com Node.js
 
-O projeto usa módulos JavaScript. Não abra `index.html` diretamente: navegadores bloqueiam os imports de módulos em `file://`.
-
-No Windows, dê dois cliques em `run-lingopulse.bat`. É necessário ter Python 3 instalado. O navegador abrirá automaticamente; deixe a janela do servidor aberta enquanto joga e pressione Ctrl+C nela para encerrar.
-
-Em qualquer sistema com Python 3, você também pode iniciar o servidor manualmente:
+Requer Node.js 20 ou superior. Não é necessário instalar dependências:
 
 ```bash
-python3 serve.py
+npm start
 ```
 
-Também é possível publicar a pasta em qualquer hospedagem estática HTTPS.
+Abra `http://127.0.0.1:3000/` no navegador. Para desenvolvimento, `npm run dev` inicia o mesmo servidor. O servidor fica restrito a `127.0.0.1` por padrão.
+
+No Windows, `run-lingopulse.bat` usa Node.js quando disponível e mantém o servidor Python como alternativa.
+
+## Publicar na Vercel
+
+O `vercel.json` seleciona a opção sem framework, executa `npm run build` e publica a pasta `dist`. Não é necessário configurar variáveis de ambiente.
+
+### Via GitHub
+
+1. Na Vercel, crie um projeto e importe `KenedyDesenvolvedor/lingopulse-mvp`.
+2. Use a raiz do repositório como diretório do projeto; as configurações de build e saída já estão no `vercel.json`.
+3. Clique em **Deploy**. Depois, novos commits na branch conectada geram novas publicações.
+
+### Via CLI
+
+Instale o CLI oficial da Vercel e autentique sua conta:
+
+```bash
+npm install --global vercel
+vercel login
+```
+
+Depois, no diretório do projeto:
+
+```bash
+npm run deploy:preview
+npm run deploy:production
+```
+
+O primeiro comando publica uma prévia; o segundo publica em produção. A configuração segue o [guia oficial de builds estáticos da Vercel](https://vercel.com/docs/builds) e o [formato oficial de `vercel.json`](https://vercel.com/docs/project-configuration/vercel-json).
 
 ## Testes automatizados
-
-Requer Node.js 20 ou superior:
 
 ```bash
 npm test
@@ -26,7 +50,7 @@ npm test
 
 Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pedagógicas, avanço automático da prática, seletores da interface, energia, persistência e revisão espaçada.
 
-## O que está implementado
+## Fluxo e recursos
 
 - Fluxo por expressão: aprender → praticar com ajuda → WordPuzzle → revisar erros → avançar.
 - Tela de ensino com expressão, tradução, divisão por palavras/partes, dicas e contexto de uso.
@@ -42,10 +66,6 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 - Progresso, idioma, energia, lições concluídas, erros e histórico de revisão salvos localmente.
 - Interface responsiva, foco visível, regiões `aria-live`, botões de teclado e suporte a `prefers-reduced-motion`.
 
-## Testes
-
-Requer Node.js 20 ou superior. Execute `npm test`. A suíte cobre regras do puzzle, conteúdo e idiomas, presença/ordem das etapas da interface, consistência dos seletores, energia, persistência, agendamento e histórico de revisão.
-
 ## Limitações conhecidas
 
 - O salvamento local fica no navegador/dispositivo e não sincroniza entre aparelhos.
@@ -55,18 +75,3 @@ Requer Node.js 20 ou superior. Execute `npm test`. A suíte cobre regras do puzz
 - A revisão espaçada é local e baseada em intervalos simples, não em um algoritmo adaptativo avançado.
 - A interação principal é por toque/clique; arrastar e soltar depende do suporte do navegador.
 - Não há contas, sincronização em nuvem, reconhecimento de pronúncia, anúncios ou compras reais.
-
-
-
-## Estrutura
-
-```text
-index.html
-css/styles.css
-js/app.js
-js/game-logic.js
-js/phrases.js
-js/speech.js
-tests/game-logic.test.js
-package.json
-```

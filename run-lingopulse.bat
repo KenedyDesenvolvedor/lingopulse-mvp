@@ -2,6 +2,9 @@
 setlocal
 cd /d "%~dp0"
 
+where node >nul 2>&1
+if not errorlevel 1 goto use_node
+
 where py >nul 2>&1
 if not errorlevel 1 goto use_py
 
@@ -14,6 +17,10 @@ exit /b 1
 
 :use_py
 py -3 serve.py
+goto finished
+
+:use_node
+node serve.mjs
 goto finished
 
 :use_python
