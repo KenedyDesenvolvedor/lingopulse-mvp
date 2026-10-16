@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createInitialState, isAnswerCorrect, loadState, normalizeWords, recordMistake, recordReview, getDueReviews, restoreEnergy, saveState, shuffleWords, MAX_ENERGY, ENERGY_RECHARGE_MS, REVIEW_INTERVALS_MS, STORAGE_KEY } from '../js/game-logic.js';
+import { createInitialState, isAnswerCorrect, loadState, normalizeWords, recordMistake, recordReview, getDueReviews, restoreEnergy, saveState, shuffleWords, getPlayerLevel, awardLessonCompletion, purchaseLife, MAX_ENERGY, ENERGY_RECHARGE_MS, REVIEW_INTERVALS_MS, STORAGE_KEY, LIFE_REFILL_COST } from '../js/game-logic.js';
 
 test('normaliza espaços e pontuação sem mudar a ordem', () => {
   assert.equal(normalizeWords([' Hello ', 'world', '!']), 'hello world!');
@@ -30,6 +30,37 @@ test('energia recarrega um ponto por intervalo e nunca excede o máximo', () => 
   assert.equal(restoreEnergy(state, ENERGY_RECHARGE_MS - 1).energy, 2);
   assert.equal(restoreEnergy(state, ENERGY_RECHARGE_MS).energy, 3);
   assert.equal(restoreEnergy(state, ENERGY_RECHARGE_MS * 10).energy, MAX_ENERGY);
+});
+
+test('XP calcula nível e progresso para a próxima meta', () => {
+  assert.deepEqual(getPlayerLevel(0), { level: 1, progressXp: 0, xpForNextLevel: 100, remainingXp: 100 });
+  assert.deepEqual(getPlayerLevel(99), { level: 1, progressXp: 99, xpForNextLevel: 100, remainingXp: 1 });
+  assert.deepEqual(getPlayerLevel(100), { level: 2, progressXp: 0, xpForNextLevel: 100, remainingXp: 100 });
+});
+
+test('conclusão de lição dá XP, moedas e bônus único ao subir de nível', () => {
+  const initial = { ...createInitialState(0), xp: 90, coins: 2 };
+  const earned = awardLessonCompletion(initial, 'en1');
+  assert.equal(earned.reward.xp, 10);
+  assert.equal(earned.reward.coins, 20);
+  assert.equal(earned.reward.bonusCoins, 15);
+  assert.equal(earned.reward.leveledUp, true);
+  assert.equal(earned.state.xp, 100);
+  assert.equal(earned.state.coins, 22);
+  assert.equal(earned.state.highestRewardedLevel, 2);
+  assert.equal(awardLessonCompletion(earned.state, 'en1').state, earned.state, 'repetir uma lição não deve gerar recompensa duplicada');
+});
+
+test('loja troca moedas por uma vida e preserva o limite de energia', () => {
+  const broke = { ...createInitialState(0), energy: 0, coins: LIFE_REFILL_COST - 1, energyUpdatedAt: 1000 };
+  assert.equal(purchaseLife(broke, 2000).reason, 'coins');
+  const ready = { ...broke, coins: LIFE_REFILL_COST };
+  const purchase = purchaseLife(ready, 2000);
+  assert.equal(purchase.ok, true);
+  assert.equal(purchase.state.coins, 0);
+  assert.equal(purchase.state.energy, 1);
+  assert.equal(purchase.state.energyUpdatedAt, 2000);
+  assert.equal(purchaseLife({ ...createInitialState(0), energy: MAX_ENERGY }, 0).reason, 'full');
 });
 
 test('salva e restaura progresso com validação defensiva', () => {

@@ -1,4 +1,4 @@
-# LingoPulse — MVP pedagógico 0.2.5
+# LingoPulse — MVP pedagógico 0.3.0
 
 Protótipo web modular em HTML, CSS e JavaScript puro. O projeto agora inclui servidor local em Node.js e configuração para publicar os arquivos estáticos na Vercel.
 
@@ -61,7 +61,9 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 - Tema visual completo muda automaticamente com o idioma: Londres em azul-marinho e cruzes britânicas; Madri em terracota, sol e azulejos; Paris em tricolor e tons de avenida; Tóquio em papel, sol vermelho e ondas; Moscou em azul-gelo, neve e tricolor.
 - Seleção por toque/clique e arrastar e soltar; as peças escolhidas podem ser removidas.
 - Feedback explicativo após respostas incorretas e revisão da resposta após cada puzzle.
-- XP e LingoCoins na primeira conclusão de cada expressão; energia só é consumida por tentativas erradas no puzzle.
+- XP avança níveis a cada 100 pontos; cada expressão concluída pela primeira vez rende 10 XP e 5 LingoCoins, e cada novo nível concede 15 moedas bônus.
+- Vidas são consumidas apenas por erros no WordPuzzle, recarregam em intervalos de 30 minutos e podem ser recuperadas individualmente por 15 LingoCoins.
+- Loja local com saldo e pacotes sugeridos de 50, 150 e 400 moedas. Os botões de compra permanecem desativados até configurar provedor, preços e validação de pagamentos no backend.
 - Revisão espaçada: erros recebem prazo de revisão (1 minuto na primeira ocorrência, 10 minutos após repetição); ao revisar, o próximo intervalo aumenta.
 - Progresso, idioma, energia, lições concluídas, erros e histórico de revisão salvos localmente.
 - Interface responsiva, foco visível, regiões `aria-live`, botões de teclado e suporte a `prefers-reduced-motion`.
@@ -74,4 +76,4 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 - A voz depende das vozes instaladas no navegador/sistema e pode não existir em todos os dispositivos.
 - A revisão espaçada é local e baseada em intervalos simples, não em um algoritmo adaptativo avançado.
 - A interação principal é por toque/clique; arrastar e soltar depende do suporte do navegador.
-- Não há contas, sincronização em nuvem, reconhecimento de pronúncia, anúncios ou compras reais.
+- Não há contas, sincronização em nuvem, reconhecimento de pronúncia, anúncios ou cobrança real. A vitrine de moedas é apenas preparatória; não há compra ativa nem concessão de moedas por pagamento.

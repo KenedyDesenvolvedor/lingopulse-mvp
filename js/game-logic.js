@@ -1,5 +1,10 @@
 export const MAX_ENERGY = 5;
 export const ENERGY_RECHARGE_MS = 30 * 60 * 1000;
+export const XP_PER_LEVEL = 100;
+export const LESSON_XP_REWARD = 10;
+export const LESSON_COIN_REWARD = 5;
+export const LEVEL_UP_COIN_REWARD = 15;
+export const LIFE_REFILL_COST = 15;
 export const STORAGE_KEY = 'lingopulse-mvp-v1';
 export const REVIEW_INTERVALS_MS = [60 * 1000, 10 * 60 * 1000, 24 * 60 * 60 * 1000, 3 * 24 * 60 * 60 * 1000];
 
@@ -22,7 +27,54 @@ export function shuffleWords(words, random = Math.random) {
 }
 
 export function createInitialState(now = Date.now()) {
-  return { version: 1, language: 'en', currentLesson: 0, xp: 0, coins: 0, energy: MAX_ENERGY, energyUpdatedAt: now, streakDays: 0, completed: {}, mistakes: {}, reviewHistory: {}, lastPlayedDate: null };
+  return { version: 1, language: 'en', currentLesson: 0, xp: 0, coins: 0, energy: MAX_ENERGY, energyUpdatedAt: now, highestRewardedLevel: 1, streakDays: 0, completed: {}, mistakes: {}, reviewHistory: {}, lastPlayedDate: null };
+}
+
+export function getPlayerLevel(xp = 0) {
+  const safeXp = Math.max(0, Math.floor(Number(xp) || 0));
+  const level = Math.floor(safeXp / XP_PER_LEVEL) + 1;
+  const progressXp = safeXp % XP_PER_LEVEL;
+  return { level, progressXp, xpForNextLevel: XP_PER_LEVEL, remainingXp: XP_PER_LEVEL - progressXp };
+}
+
+export function awardLessonCompletion(state, phraseId) {
+  if (!phraseId || state.completed?.[phraseId]) {
+    return { state, reward: { xp: 0, coins: 0, bonusCoins: 0, leveledUp: false, level: getPlayerLevel(state.xp).level } };
+  }
+
+  const beforeLevel = getPlayerLevel(state.xp).level;
+  const xp = Math.max(0, Math.floor(Number(state.xp) || 0)) + LESSON_XP_REWARD;
+  const afterLevel = getPlayerLevel(xp).level;
+  const highestRewardedLevel = Math.max(beforeLevel, Math.floor(Number(state.highestRewardedLevel) || beforeLevel));
+  const levelsToReward = Math.max(0, afterLevel - highestRewardedLevel);
+  const bonusCoins = levelsToReward * LEVEL_UP_COIN_REWARD;
+  const coins = LESSON_COIN_REWARD + bonusCoins;
+  return {
+    state: {
+      ...state,
+      xp,
+      coins: Math.max(0, Number(state.coins) || 0) + coins,
+      highestRewardedLevel: Math.max(highestRewardedLevel, afterLevel),
+      completed: { ...(state.completed || {}), [phraseId]: true }
+    },
+    reward: { xp: LESSON_XP_REWARD, coins, bonusCoins, leveledUp: afterLevel > beforeLevel, level: afterLevel }
+  };
+}
+
+export function purchaseLife(state, now = Date.now()) {
+  const restored = restoreEnergy(state, now);
+  if (restored.energy >= MAX_ENERGY) return { ok: false, reason: 'full', state: restored };
+  if (restored.coins < LIFE_REFILL_COST) return { ok: false, reason: 'coins', state: restored };
+  return {
+    ok: true,
+    reason: null,
+    state: {
+      ...restored,
+      coins: restored.coins - LIFE_REFILL_COST,
+      energy: restored.energy + 1,
+      energyUpdatedAt: restored.energy === 0 ? now : restored.energyUpdatedAt
+    }
+  };
 }
 
 export function restoreEnergy(state, now = Date.now()) {
@@ -50,6 +102,9 @@ export function loadState(storage, now = Date.now()) {
     safe.currentLesson = Math.max(0, Math.floor(Number(safe.currentLesson) || 0));
     safe.xp = Math.max(0, Number(safe.xp) || 0);
     safe.coins = Math.max(0, Number(safe.coins) || 0);
+    safe.highestRewardedLevel = Number.isFinite(Number(parsed.highestRewardedLevel))
+      ? Math.max(1, Math.floor(Number(parsed.highestRewardedLevel)))
+      : getPlayerLevel(safe.xp).level;
     safe.energy = Math.min(MAX_ENERGY, Math.max(0, Number(safe.energy) || 0));
     safe.completed = safe.completed && typeof safe.completed === 'object' ? safe.completed : {};
     safe.mistakes = safe.mistakes && typeof safe.mistakes === 'object' ? safe.mistakes : {};

@@ -14,9 +14,11 @@
   <header class="topbar">
     <a class="brand" href="#home" aria-label="LingoPulse início"><span class="brand-mark" aria-hidden="true">✦</span><span>Lingo<span>Pulse</span></span></a>
     <div class="top-stats" aria-label="Seu progresso">
-      <span class="stat" title="Experiência"><span aria-hidden="true">⚡</span><strong id="xp-value">0 XP</strong></span>
-      <span class="stat" title="Moedas"><span aria-hidden="true">🟡</span><strong id="coins-value">0</strong></span>
-      <span class="stat" title="Energia"><span aria-hidden="true">♥</span><strong id="energy-value">5/5</strong></span>
+      <button class="stat stat-button level-stat" id="level-open-button" type="button" aria-label="Ver nível e progresso de XP">
+        <span aria-hidden="true">⚡</span><span class="stat-copy"><strong id="xp-value">0 XP</strong><small>NÍVEL <span id="level-value">1</span></small><span class="xp-track" role="progressbar" aria-label="Progresso para o próximo nível" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="xp-progress-fill"></span></span></span>
+      </button>
+      <button class="stat stat-button" id="shop-open-button" type="button" aria-label="Abrir loja de LingoCoins"><span aria-hidden="true">🟡</span><strong><span id="coins-value">0</span><span class="coin-label"> moedas</span></strong></button>
+      <button class="stat stat-button lives-stat" id="lives-open-button" type="button" aria-label="Abrir loja para recuperar vidas"><span aria-hidden="true">♥</span><span class="stat-copy"><strong id="energy-value">5/5 vidas</strong><small id="lives-timer" hidden></small></span></button>
     </div>
   </header>
 
@@ -90,9 +92,25 @@
     </section>
 
     <section class="bottom-row" aria-label="Como funciona o aprendizado"><div class="mini-card"><span aria-hidden="true">📖</span><div><strong>Aprenda com contexto</strong><p>Significado, vocabulário, exemplos e pronúncia antes do desafio.</p></div></div><div class="mini-card"><span aria-hidden="true">🧠</span><div><strong>Revise no momento certo</strong><p>Se errar, a expressão volta para revisão espaçada.</p></div></div></section>
-    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.2.5</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
+    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.0</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
   </main>
   <dialog id="result-dialog" class="result-dialog" aria-labelledby="result-title"><div class="result-content"><div class="result-icon" aria-hidden="true">🏆</div><p class="eyebrow">TRILHA CONCLUÍDA</p><h2 id="result-title">Você mandou bem!</h2><p id="result-summary">Você concluiu a trilha.</p><div class="result-rewards"><span>⚡ <strong id="result-xp">0 XP</strong></span><span>🟡 <strong id="result-coins">0 moedas</strong></span></div><button id="restart-button" class="primary-button" type="button">Recomeçar trilha</button></div></dialog>
+  <dialog id="level-dialog" class="resource-dialog" aria-labelledby="level-dialog-title">
+    <div class="resource-dialog-head"><div><p class="stage-kicker">SEU PROGRESSO</p><h2 id="level-dialog-title">Nível <span id="level-dialog-number">1</span> · <span id="level-title">Aprendiz</span></h2></div><button class="dialog-close" type="button" data-close-dialog="level-dialog" aria-label="Fechar">×</button></div>
+    <p id="level-dialog-summary" class="status-message"></p><div class="level-dialog-track" role="progressbar" aria-label="Progresso para o próximo nível" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="level-dialog-progress"></span></div><p id="level-dialog-xp" class="level-dialog-xp"></p>
+    <div class="economy-note"><strong>Como ganhar XP</strong><p>Complete uma expressão pela primeira vez para receber 10 XP e 5 LingoCoins. A cada 100 XP você sobe de nível e ganha 15 LingoCoins bônus.</p></div>
+  </dialog>
+  <dialog id="shop-dialog" class="resource-dialog" aria-labelledby="shop-title">
+    <div class="resource-dialog-head"><div><p class="stage-kicker">LOJA LINGOPULSE</p><h2 id="shop-title">Use suas LingoCoins</h2></div><button class="dialog-close" type="button" data-close-dialog="shop-dialog" aria-label="Fechar">×</button></div>
+    <p id="shop-balance" class="shop-balance"></p><article class="shop-item"><span class="shop-item-icon" aria-hidden="true">♥</span><div><h3>Recuperar 1 vida</h3><p>Continue tentando agora. As vidas também recarregam com o tempo.</p><strong>🟡 <span id="life-refill-cost">15</span> moedas</strong></div><button id="buy-life-button" class="primary-button shop-buy-button" type="button">Comprar</button></article>
+    <p id="shop-feedback" class="feedback" role="status" aria-live="polite" hidden></p>
+    <section class="coin-pack-section" aria-labelledby="coin-pack-title"><div class="coin-pack-heading"><div><h3 id="coin-pack-title">Pacotes de LingoCoins</h3><p>Uma forma rápida de voltar ao jogo e continuar estudando.</p></div><span aria-hidden="true">🟡</span></div><div class="coin-pack-grid">
+      <article class="coin-pack"><span class="coin-pack-name">Inicial</span><strong>50 <small>moedas</small></strong><button type="button" disabled aria-label="Pacote Inicial: compra em breve">Em breve</button></article>
+      <article class="coin-pack featured"><span class="coin-pack-name">Prática</span><strong>150 <small>moedas</small></strong><button type="button" disabled aria-label="Pacote Prática: compra em breve">Em breve</button></article>
+      <article class="coin-pack"><span class="coin-pack-name">Imersão</span><strong>400 <small>moedas</small></strong><button type="button" disabled aria-label="Pacote Imersão: compra em breve">Em breve</button></article>
+    </div><p class="payment-notice">Compras reais serão ativadas após a configuração do provedor de pagamento e da validação segura. Nenhuma cobrança é feita nesta versão.</p></section>
+    <div class="economy-note"><strong>Como ganhar moedas</strong><p>Ganhe 5 moedas ao concluir cada expressão pela primeira vez e 15 moedas extras ao subir de nível.</p></div>
+  </dialog>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

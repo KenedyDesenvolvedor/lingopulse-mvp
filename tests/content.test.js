@@ -63,3 +63,15 @@ test('tema cultural atualiza nome, cidade, motivo e bandeira para cada idioma', 
   assert.match(themes, /--page-pattern:/);
   assert.match(app, /\$\('country-banner'\)\.setAttribute\('aria-label'/);
 });
+
+test('XP, moedas e vidas têm progressão, gasto e vitrine de pacotes', () => {
+  for (const id of ['level-open-button', 'level-dialog', 'shop-open-button', 'shop-dialog', 'lives-open-button', 'buy-life-button']) {
+    assert.match(html, new RegExp(`id="${id}"`));
+  }
+  assert.match(html, /50 <small>moedas<\/small>/);
+  assert.match(html, /150 <small>moedas<\/small>/);
+  assert.match(html, /400 <small>moedas<\/small>/);
+  assert.match(html, /Nenhuma cobrança é feita nesta versão/);
+  assert.match(app, /awardLessonCompletion\(state, currentPhrase\(\)\.id\)/);
+  assert.match(app, /purchaseLife\(state, Date\.now\(\)\)/);
+});

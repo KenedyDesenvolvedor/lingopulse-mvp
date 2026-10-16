@@ -1,5 +1,5 @@
 import { LANGUAGES, PHRASES } from './phrases.js';
-import { MAX_ENERGY, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview } from './game-logic.js';
+import { MAX_ENERGY, ENERGY_RECHARGE_MS, LIFE_REFILL_COST, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview, getPlayerLevel, awardLessonCompletion, purchaseLife, restoreEnergy } from './game-logic.js';
 import { speak } from './speech.js';
 
 const $ = id => document.getElementById(id);
@@ -28,6 +28,8 @@ const WORD_MEANINGS = {
   ru: { 'Мне': 'a mim; em russo, é a forma usada com “нравится”', 'нравится': 'agrada', 'кофе.': 'café', 'Доброе': 'bom (forma neutra)', 'утро!': 'manhã', 'Где': 'onde', 'находится': 'fica/localiza-se', 'вокзал?': 'estação ferroviária', 'нужна': 'é necessária (forma feminina)', 'помощь.': 'ajuda', 'Большое': 'grande/muito', 'спасибо!': 'obrigado(a)', 'Счёт,': 'conta', 'пожалуйста.': 'por favor', 'Я': 'eu', 'учусь.': 'estudo/aprendo', 'Сколько': 'quanto', 'это': 'isto', 'стоит?': 'custa?', 'Приятно': 'agradável', 'познакомиться!': 'conhecer alguém', 'До': 'até', 'завтра!': 'amanhã' }
 };
 
+const LEVEL_TITLES = ['Aprendiz', 'Explorador', 'Viajante', 'Poliglota', 'Mestre'];
+
 const COUNTRY_THEMES = {
   en: { country: 'Reino Unido', caption: 'Londres · ruas históricas e vida urbana', motif: '🏙️', color: '#101d31' },
   es: { country: 'Espanha', caption: 'Madri · sol, praças e azulejos', motif: '☀️', color: '#f2e5d1' },
@@ -52,9 +54,61 @@ function applyLanguageTheme() {
 }
 function persist() { state.currentLesson = Math.max(0, Math.min(phraseIndex, currentPhrases().length - 1)); saveState(storage, state); renderStats(); renderReviewCount(); }
 function renderStats() {
+  const progress = getPlayerLevel(state.xp);
   $('xp-value').textContent = `${state.xp} XP`;
   $('coins-value').textContent = state.coins;
-  $('energy-value').textContent = `${state.energy}/${MAX_ENERGY}`;
+  $('energy-value').textContent = `${state.energy}/${MAX_ENERGY} vidas`;
+  $('level-value').textContent = progress.level;
+  $('xp-progress-fill').style.width = `${progress.progressXp}%`;
+  document.querySelector('.xp-track').setAttribute('aria-valuenow', String(progress.progressXp));
+  $('level-dialog-number').textContent = progress.level;
+  $('level-title').textContent = LEVEL_TITLES[Math.min(progress.level - 1, LEVEL_TITLES.length - 1)];
+  $('level-dialog-summary').textContent = progress.level >= LEVEL_TITLES.length
+    ? 'Você alcançou o nível máximo de título. Continue aprendendo para acumular XP e moedas.'
+    : `Faltam ${progress.remainingXp} XP para chegar ao nível ${progress.level + 1}.`;
+  $('level-dialog-progress').style.width = `${progress.progressXp}%`;
+  $('level-dialog-progress').parentElement.setAttribute('aria-valuenow', String(progress.progressXp));
+  $('level-dialog-xp').textContent = `${progress.progressXp} de ${progress.xpForNextLevel} XP para o próximo nível`;
+  const energyUpdatedAt = Number(state.energyUpdatedAt);
+  const energyElapsed = Number.isFinite(energyUpdatedAt) ? Math.max(0, Date.now() - energyUpdatedAt) : 0;
+  const msUntilLife = state.energy >= MAX_ENERGY ? 0 : Math.max(0, ENERGY_RECHARGE_MS - energyElapsed);
+  $('lives-timer').hidden = state.energy >= MAX_ENERGY;
+  $('lives-timer').textContent = msUntilLife ? `+1 em ${formatCountdown(msUntilLife)}` : 'Vida disponível';
+  $('lives-open-button').setAttribute('aria-label', `${state.energy} de ${MAX_ENERGY} vidas. Abrir loja para recuperar uma vida por ${LIFE_REFILL_COST} moedas.`);
+  $('shop-balance').textContent = `Seu saldo: ${state.coins} LingoCoins`;
+  $('life-refill-cost').textContent = LIFE_REFILL_COST;
+  $('buy-life-button').disabled = state.energy >= MAX_ENERGY || state.coins < LIFE_REFILL_COST;
+}
+function formatCountdown(milliseconds) {
+  const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
+  return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+}
+function openDialog(id) { const dialog = $(id); if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); }
+function closeDialog(id) { const dialog = $(id); if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open'); }
+function openShop() { $('shop-feedback').hidden = true; renderStats(); openDialog('shop-dialog'); }
+function buyLife() {
+  const purchase = purchaseLife(state, Date.now());
+  state = purchase.state;
+  persist();
+  const feedback = $('shop-feedback');
+  if (!purchase.ok) {
+    const message = purchase.reason === 'full'
+      ? 'Você já está com todas as vidas. Guarde suas moedas para quando precisar.'
+      : `Você precisa de ${LIFE_REFILL_COST} moedas para recuperar uma vida. Complete novas lições para ganhar mais.`;
+    feedback.textContent = message;
+    feedback.className = 'feedback bad';
+    feedback.hidden = false;
+    renderBank();
+    return;
+  }
+  feedback.textContent = 'Vida recuperada! Boa prática.';
+  feedback.className = 'feedback good';
+  feedback.hidden = false;
+  if (stage === 'puzzle') {
+    $('check-button').disabled = false;
+    $('check-button').textContent = 'Conferir resposta →';
+    renderBank();
+  }
 }
 function renderProgress() {
   const total = currentPhrases().length;
@@ -207,9 +261,13 @@ function checkAnswer() {
   lastSelectedAnswer = [...answerWords];
   if (isAnswerCorrect(answerWords, currentPhrase().answer)) {
     locked = true; lastPuzzleCorrect = true;
-    if (!state.completed[currentPhrase().id]) { state.xp += 10; state.coins += 5; sessionXP += 10; sessionCoins += 5; }
-    state.completed[currentPhrase().id] = true; state.lastPlayedDate = new Date().toISOString().slice(0, 10);
-    persist(); showFeedback('Correto! Você aplicou o que aprendeu. +10 XP e +5 LingoCoins na primeira conclusão desta lição.', true);
+    const completion = awardLessonCompletion(state, currentPhrase().id);
+    state = { ...completion.state, lastPlayedDate: new Date().toISOString().slice(0, 10) };
+    sessionXP += completion.reward.xp; sessionCoins += completion.reward.coins;
+    const rewardText = completion.reward.xp
+      ? `+${completion.reward.xp} XP e +${completion.reward.coins} LingoCoins${completion.reward.leveledUp ? `, incluindo bônus por alcançar o nível ${completion.reward.level}` : ''}.`
+      : 'Você já concluiu esta expressão antes, então não há recompensa duplicada.';
+    persist(); showFeedback(`Correto! Você aplicou o que aprendeu. ${rewardText}`, true);
     $('check-button').hidden = true; renderBank();
     window.setTimeout(showReviewStage, 650);
   } else {
@@ -297,6 +355,11 @@ $('sound-button').addEventListener('click', () => speakCurrent('speech-status'))
 $('repeat-speech-button').addEventListener('click', () => speakCurrent('speech-status'));
 $('review-speak-button').addEventListener('click', () => speakCurrent('review-speech-status'));
 $('open-reviews-button').addEventListener('click', openReviewQueue);
+$('level-open-button').addEventListener('click', () => { renderStats(); openDialog('level-dialog'); });
+$('shop-open-button').addEventListener('click', openShop);
+$('lives-open-button').addEventListener('click', openShop);
+$('buy-life-button').addEventListener('click', buyLife);
+document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
 $('back-to-learning-button').addEventListener('click', () => { renderLearn(); setStage('learn'); });
 $('language-select').addEventListener('change', event => { state.language = LANGUAGES[event.target.value] ? event.target.value : 'en'; applyLanguageTheme(); phraseIndex = 0; persist(); startLesson(true); });
 $('restart-button').addEventListener('click', () => { $('result-dialog').close(); startLesson(true); });
@@ -304,6 +367,12 @@ $('reset-button').addEventListener('click', () => { if (window.confirm('Quer apa
 $('answer-slots').addEventListener('dragover', event => event.preventDefault());
 $('answer-slots').addEventListener('drop', event => { event.preventDefault(); const id = event.dataTransfer?.getData('text/plain'); if (id) addWord(id); });
 window.addEventListener('focus', () => { state = loadState(storage); persist(); });
+window.setInterval(() => {
+  const previousEnergy = state.energy;
+  state = restoreEnergy(state, Date.now());
+  if (state.energy !== previousEnergy) persist();
+  else renderStats();
+}, 1000);
 $('language-select').value = LANGUAGES[state.language] ? state.language : 'en';
 applyLanguageTheme();
 renderStats(); renderReviewCount(); renderLearn(); setStage('learn');
