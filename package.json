@@ -1,0 +1,7 @@
+{
+  "name": "lingopulse-wordpuzzle-mvp",
+  "version": "0.2.4",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}

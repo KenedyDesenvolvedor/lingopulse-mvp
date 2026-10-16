@@ -1,0 +1,226 @@
+/* A full visual identity for each study destination. */
+:root[data-language-theme="en"] {
+  color-scheme: dark;
+  --bg: #101d31;
+  --panel: #172a45;
+  --panel2: #203957;
+  --line: #466587;
+  --text: #f5f2e9;
+  --muted: #bdc9d5;
+  --purple: #548fc7;
+  --cyan: #ecc56d;
+  --pink: #d85d64;
+  --good: #75d5ac;
+  --bad: #f08383;
+  --theme-glow: #284b75;
+  --theme-glow-secondary: #702d38;
+  --theme-shadow: #24456b;
+  --page-pattern: radial-gradient(ellipse at 50% -10%, #345a804c, transparent 52%), repeating-linear-gradient(132deg, transparent 0 42px, #dfe7f006 43px 44px);
+  --banner-background: linear-gradient(110deg, #142b47, #234568 58%, #702c39);
+  --art-background: linear-gradient(27deg, transparent 39%, #f1eee3 40% 43%, #b63d4c 44% 47%, #f1eee3 48% 51%, transparent 52%), linear-gradient(-27deg, transparent 39%, #f1eee3 40% 43%, #b63d4c 44% 47%, #f1eee3 48% 51%, transparent 52%), linear-gradient(90deg, transparent 38%, #e8e4dc 39% 45%, #b63d4c 46% 54%, #e8e4dc 55% 61%, transparent 62%), linear-gradient(0deg, transparent 34%, #e8e4dc 35% 43%, #b63d4c 44% 56%, #e8e4dc 57% 65%, transparent 66%), #234b78;
+  --button-shadow: #315f8e;
+}
+
+:root[data-language-theme="es"] {
+  color-scheme: light;
+  --bg: #f2e5d1;
+  --panel: #fff8ed;
+  --panel2: #f7ead5;
+  --line: #d4ad87;
+  --text: #35251c;
+  --muted: #755a48;
+  --purple: #bd5139;
+  --cyan: #a07016;
+  --pink: #c63e35;
+  --good: #26794d;
+  --bad: #b33532;
+  --theme-glow: #ecb45b;
+  --theme-glow-secondary: #bd5139;
+  --theme-shadow: #8a3a2c;
+  --page-pattern: radial-gradient(circle at 86% 12%, #e9a33e33 0 10rem, transparent 10.1rem), repeating-linear-gradient(45deg, transparent 0 25px, #ad56320b 26px 27px), #f2e5d1;
+  --banner-background: linear-gradient(105deg, #8d3429 0 16%, #f1c45e 16% 82%, #a83f2e 82%);
+  --art-background: radial-gradient(circle at 50% 50%, #fff0bd 0 17%, #df8e32 18% 22%, transparent 23%), linear-gradient(0deg, #a83328 0 25%, #f2c34f 25% 76%, #a83328 76%);
+  --button-shadow: #8d3b2d;
+}
+
+:root[data-language-theme="fr"] {
+  color-scheme: light;
+  --bg: #e7edf4;
+  --panel: #fbfaf6;
+  --panel2: #eaf0f7;
+  --line: #b3c1d2;
+  --text: #1c2c45;
+  --muted: #55667d;
+  --purple: #315d9c;
+  --cyan: #b78b47;
+  --pink: #c64652;
+  --good: #28754e;
+  --bad: #b73e4b;
+  --theme-glow: #7d9cc5;
+  --theme-glow-secondary: #c64a57;
+  --theme-shadow: #284873;
+  --page-pattern: radial-gradient(ellipse at 15% 0%, #3d65a21d, transparent 38%), radial-gradient(ellipse at 90% 18%, #c646521a, transparent 31%), #e7edf4;
+  --banner-background: linear-gradient(90deg, #244c82 0 14%, #f8f3e8 14% 86%, #bd3848 86%);
+  --art-background: linear-gradient(90deg, #244d85 0 33.33%, #fbf6e9 33.33% 66.66%, #c84351 66.66%);
+  --button-shadow: #294a76;
+}
+
+:root[data-language-theme="ja"] {
+  color-scheme: light;
+  --bg: #f3e9e2;
+  --panel: #fffaf6;
+  --panel2: #f4e8e1;
+  --line: #d2aca8;
+  --text: #302426;
+  --muted: #755e60;
+  --purple: #b62f49;
+  --cyan: #aa7842;
+  --pink: #dc7890;
+  --good: #357852;
+  --bad: #b63848;
+  --theme-glow: #d8475a;
+  --theme-glow-secondary: #edb2a9;
+  --theme-shadow: #86243c;
+  --page-pattern: radial-gradient(circle at 85% 13%, #d82f4822 0 9rem, transparent 9.1rem), repeating-radial-gradient(ellipse at 12% 92%, transparent 0 18px, #a24e4a0c 19px 20px, transparent 21px 36px), #f3e9e2;
+  --banner-background: linear-gradient(105deg, #f5e7dc, #fffaf3 60%, #f2d6d1);
+  --art-background: radial-gradient(circle at 50% 34%, #c92c43 0 23%, transparent 24%), repeating-radial-gradient(ellipse at 50% 115%, #244b64 0 3px, #e9f1e9 4px 10px, #244b64 11px 13px, transparent 14px 25px), #f7eee5;
+  --button-shadow: #8b2d43;
+}
+
+:root[data-language-theme="ru"] {
+  color-scheme: light;
+  --bg: #dfe9f3;
+  --panel: #f8fbff;
+  --panel2: #e7eff8;
+  --line: #b1c1d5;
+  --text: #1e2c43;
+  --muted: #52647b;
+  --purple: #315fa1;
+  --cyan: #b93b49;
+  --pink: #cf3d50;
+  --good: #28764f;
+  --bad: #b63a4d;
+  --theme-glow: #87a9d2;
+  --theme-glow-secondary: #d84a55;
+  --theme-shadow: #284a78;
+  --page-pattern: radial-gradient(circle at 18% 3%, #ffffffd9 0 1px, transparent 2px), radial-gradient(circle at 78% 8%, #ffffffd0 0 1px, transparent 2px), radial-gradient(circle at 58% 24%, #ffffffb0 0 2px, transparent 3px), linear-gradient(160deg, #eaf2fa, #d8e4f0);
+  --banner-background: linear-gradient(180deg, #f8fbff 0 33.33%, #5383c0 33.33% 66.66%, #c94051 66.66%);
+  --art-background: linear-gradient(180deg, #fff 0 33.33%, #4279ba 33.33% 66.66%, #d63d4c 66.66%);
+  --button-shadow: #294c7d;
+}
+
+body {
+  color: var(--text);
+  background: var(--page-pattern, var(--bg));
+  transition: background .25s ease, color .25s ease;
+}
+
+.topbar {
+  background: color-mix(in srgb, var(--panel) 91%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--line) 55%, transparent);
+  backdrop-filter: blur(14px);
+}
+.brand > span:last-child span { color: var(--cyan); }
+.brand-mark { background: linear-gradient(140deg, var(--purple), var(--pink)); }
+.stat, .mini-card { color: var(--text); background: var(--panel); border-color: var(--line); }
+.stat > span { color: var(--cyan); }
+.intro .eyebrow, .stage-kicker { color: var(--cyan); }
+.pulse-dot { background: var(--pink); box-shadow: 0 0 12px var(--pink); }
+h1 span { color: var(--purple); }
+.intro p, .lesson-title-row p { color: var(--muted); }
+
+.game-card {
+  border-color: var(--line);
+  background: var(--panel);
+  box-shadow: 0 24px 72px color-mix(in srgb, var(--theme-shadow) 25%, transparent);
+}
+.lesson-head { background: linear-gradient(130deg, color-mix(in srgb, var(--panel2) 64%, transparent), transparent 70%); }
+.level-pill { background: color-mix(in srgb, var(--purple) 15%, var(--panel)); color: var(--purple); border-color: color-mix(in srgb, var(--purple) 40%, var(--line)); }
+.progress-track { background: color-mix(in srgb, var(--line) 58%, var(--panel)); }
+.progress-track span { background: linear-gradient(90deg, var(--purple), var(--cyan)); }
+.icon-button, select { color: var(--text); background: var(--panel2); border-color: var(--line); }
+.language-row { color: var(--muted); background: var(--panel2); border-color: var(--line); }
+
+.country-banner {
+  display: grid;
+  grid-template-columns: 102px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 116px;
+  margin: 16px 24px 0;
+  padding: 12px 18px 12px 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+  border-radius: 18px;
+  background: var(--banner-background);
+  color: var(--text);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--theme-shadow) 12%, transparent);
+}
+.country-art {
+  display: grid;
+  place-items: center;
+  position: relative;
+  height: 88px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
+  border-radius: 13px;
+  background: var(--art-background);
+  box-shadow: 0 5px 14px #1112;
+}
+.country-art span { position: relative; z-index: 1; font-size: 2.1rem; filter: drop-shadow(0 3px 3px #0005); }
+.country-copy { display: grid; gap: 3px; min-width: 0; }
+.country-kicker { color: var(--purple); font-size: .63rem; font-weight: 900; letter-spacing: .16em; }
+.country-copy strong { color: var(--text); font-size: 1.34rem; line-height: 1.2; letter-spacing: -.035em; }
+.country-copy > span:last-child { color: var(--muted); font-size: .79rem; line-height: 1.35; }
+.country-flag { align-self: start; padding-top: 1px; font-size: 1.75rem; filter: drop-shadow(0 2px 2px #0002); }
+
+.stage-panel { color: var(--text); }
+.teaching-hero, .prompt-panel {
+  border-color: color-mix(in srgb, var(--purple) 38%, var(--line));
+  background: linear-gradient(115deg, color-mix(in srgb, var(--purple) 12%, var(--panel)), color-mix(in srgb, var(--cyan) 7%, var(--panel)));
+}
+.prompt-icon { background: color-mix(in srgb, var(--purple) 17%, var(--panel2)); }
+.target-phrase, .teaching-hero .target-phrase, .review-answer .target-phrase { color: var(--purple); }
+.vocabulary-item, .example-block, .practice-option, .review-queue-item {
+  color: var(--text);
+  background: var(--panel2);
+  border-color: var(--line);
+}
+.vocabulary-item span, .hint-text, .status-message, .interaction-help, .keyboard-note, .tiny-label { color: var(--muted); }
+.example-block p, .review-result { color: var(--text); }
+.example-block .teaching-tip { color: var(--purple); }
+.practice-option:hover:not(:disabled) { border-color: var(--purple); background: color-mix(in srgb, var(--purple) 11%, var(--panel2)); }
+.practice-option.correct-option { color: var(--good); border-color: var(--good); background: color-mix(in srgb, var(--good) 13%, var(--panel)); }
+.practice-option.wrong-option { color: var(--bad); border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--panel)); }
+.answer-slots { border-color: var(--line); background: color-mix(in srgb, var(--panel2) 68%, var(--bg)); }
+.answer-heading > span:first-child, .prompt-label { color: var(--purple); }
+.word-tile { color: var(--text); border-color: color-mix(in srgb, var(--purple) 68%, var(--line)); background: linear-gradient(145deg, color-mix(in srgb, var(--purple) 29%, var(--panel2)), var(--panel2)); box-shadow: 0 3px 0 var(--theme-shadow); }
+.answer-slots .word-tile { color: var(--text); border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 15%, var(--panel)); box-shadow: 0 3px 0 color-mix(in srgb, var(--cyan) 42%, var(--theme-shadow)); }
+.text-button { color: var(--purple); }
+.primary-button { color: #fff; background: linear-gradient(105deg, var(--purple), var(--pink)); box-shadow: 0 5px 0 var(--button-shadow); }
+.secondary-button { color: var(--text); background: var(--panel2); border-color: var(--line); }
+.secondary-button:hover { border-color: var(--purple); }
+.feedback.good { color: var(--good); background: color-mix(in srgb, var(--good) 13%, var(--panel)); border-color: color-mix(in srgb, var(--good) 58%, var(--line)); }
+.feedback.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 13%, var(--panel)); border-color: color-mix(in srgb, var(--bad) 58%, var(--line)); }
+.review-answer { color: var(--text); background: color-mix(in srgb, var(--cyan) 11%, var(--panel)); border-color: color-mix(in srgb, var(--cyan) 48%, var(--line)); }
+.review-answer p:last-child { color: var(--text); }
+.card-footer-actions { border-color: var(--line); }
+.result-dialog { color: var(--text); background: var(--panel); border-color: var(--line); }
+.result-rewards { background: var(--panel2); }
+.result-rewards span { color: var(--cyan); }
+footer { color: var(--muted); }
+.footer-dot { color: var(--pink); }
+
+@media (max-width: 540px) {
+  .country-banner { grid-template-columns: 72px minmax(0, 1fr) auto; gap: 11px; min-height: 92px; margin: 12px 14px 0; padding: 9px 11px 9px 9px; border-radius: 15px; }
+  .country-art { height: 72px; border-radius: 11px; }
+  .country-art span { font-size: 1.7rem; }
+  .country-kicker { font-size: .56rem; }
+  .country-copy strong { font-size: 1.12rem; }
+  .country-copy > span:last-child { font-size: .7rem; }
+  .country-flag { font-size: 1.35rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { transition: none; }
+}
