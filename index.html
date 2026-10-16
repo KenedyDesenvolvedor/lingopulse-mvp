@@ -92,7 +92,7 @@
     </section>
 
     <section class="bottom-row" aria-label="Como funciona o aprendizado"><div class="mini-card"><span aria-hidden="true">📖</span><div><strong>Aprenda com contexto</strong><p>Significado, vocabulário, exemplos e pronúncia antes do desafio.</p></div></div><div class="mini-card"><span aria-hidden="true">🧠</span><div><strong>Revise no momento certo</strong><p>Se errar, a expressão volta para revisão espaçada.</p></div></div></section>
-    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.1</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
+    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.2</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
   </main>
   <dialog id="result-dialog" class="result-dialog" aria-labelledby="result-title"><div class="result-content"><div class="result-icon" aria-hidden="true">🏆</div><p class="eyebrow">TRILHA CONCLUÍDA</p><h2 id="result-title">Você mandou bem!</h2><p id="result-summary">Você concluiu a trilha.</p><div class="result-rewards"><span>⚡ <strong id="result-xp">0 XP</strong></span><span>🟡 <strong id="result-coins">0 moedas</strong></span></div><button id="restart-button" class="primary-button" type="button">Recomeçar trilha</button></div></dialog>
   <dialog id="level-dialog" class="resource-dialog" aria-labelledby="level-dialog-title">
@@ -103,7 +103,7 @@
   <dialog id="shop-dialog" class="resource-dialog" aria-labelledby="shop-title">
     <div class="resource-dialog-head"><div><p class="stage-kicker">LOJA LINGOPULSE</p><h2 id="shop-title">Use suas LingoCoins</h2></div><button class="dialog-close" type="button" data-close-dialog="shop-dialog" aria-label="Fechar">×</button></div>
     <p id="shop-balance" class="shop-balance"></p><section class="life-options" aria-label="Opções para recuperar uma vida">
-      <article class="shop-item ad-life-item"><span class="shop-item-icon" aria-hidden="true">▶</span><div><h3>Assistir anúncio</h3><p>Ganhe 1 vida sem gastar moedas. Anúncios recompensados ainda não estão disponíveis.</p></div><button id="watch-ad-button" class="primary-button shop-buy-button" type="button" disabled aria-label="Assistir anúncio recompensado para ganhar uma vida; indisponível até configurar a rede de anúncios">Em breve</button></article>
+      <article class="shop-item ad-life-item"><span class="shop-item-icon" aria-hidden="true">▶</span><div><h3>Assistir anúncio</h3><p>Ganhe 1 vida sem gastar moedas. O anúncio só começa quando você tocar no botão.</p></div><button id="watch-ad-button" class="primary-button shop-buy-button" type="button" disabled aria-label="Assistir anúncio recompensado para ganhar uma vida; indisponível até configurar a rede de anúncios">Em breve</button></article>
       <article class="shop-item"><span class="shop-item-icon" aria-hidden="true">♥</span><div><h3>Comprar 1 vida</h3><p>Use suas LingoCoins para continuar praticando. As vidas também recarregam com o tempo.</p><strong>🟡 <span id="life-refill-cost">15</span> moedas</strong></div><button id="buy-life-button" class="primary-button shop-buy-button" type="button">Comprar com moedas</button></article>
     </section>
     <p id="shop-feedback" class="feedback" role="status" aria-live="polite" hidden></p>
@@ -114,6 +114,7 @@
     </div><p class="payment-notice">Compras reais serão ativadas após a configuração do provedor de pagamento e da validação segura. Nenhuma cobrança é feita nesta versão.</p></section>
     <div class="economy-note"><strong>Como ganhar moedas</strong><p>Ganhe 5 moedas ao concluir cada expressão pela primeira vez e 15 moedas extras ao subir de nível.</p></div>
   </dialog>
+  <script src="js/ads-config.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

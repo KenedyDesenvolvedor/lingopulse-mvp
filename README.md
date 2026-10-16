@@ -1,4 +1,4 @@
-# LingoPulse — MVP pedagógico 0.3.1
+# LingoPulse — MVP pedagógico 0.3.2
 
 Protótipo web modular em HTML, CSS e JavaScript puro. O projeto agora inclui servidor local em Node.js e configuração para publicar os arquivos estáticos na Vercel.
 
@@ -62,7 +62,8 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 - Seleção por toque/clique e arrastar e soltar; as peças escolhidas podem ser removidas.
 - Feedback explicativo após respostas incorretas e revisão da resposta após cada puzzle.
 - XP avança níveis a cada 100 pontos; cada expressão concluída pela primeira vez rende 10 XP e 5 LingoCoins, e cada novo nível concede 15 moedas bônus.
-- Vidas são consumidas apenas por erros no WordPuzzle, recarregam em intervalos de 30 minutos e podem ser recuperadas por 15 LingoCoins ou, futuramente, por anúncio recompensado.
+- Vidas são consumidas apenas por erros no WordPuzzle, recarregam em intervalos de 30 minutos e podem ser recuperadas por 15 LingoCoins ou por anúncio recompensado configurado no Google Ad Manager.
+- A loja oferece uma vida por anúncio recompensado via Google Ad Manager (GPT). O anúncio só é solicitado após o usuário tocar em “Assistir anúncio”; a vida é concedida somente após o evento oficial `rewardedSlotGranted`.
 - Loja local com saldo e pacotes sugeridos de 50, 150 e 400 moedas. Os botões de compra permanecem desativados até configurar provedor, preços e validação de pagamentos no backend.
 - Revisão espaçada: erros recebem prazo de revisão (1 minuto na primeira ocorrência, 10 minutos após repetição); ao revisar, o próximo intervalo aumenta.
 - Progresso, idioma, energia, lições concluídas, erros e histórico de revisão salvos localmente.
@@ -74,8 +75,8 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 - A recarga de energia e o agendamento de revisão usam o relógio do dispositivo; sem backend, podem ser manipulados.
 - O conteúdo didático usa explicações simples e dicionário de apoio por palavra; ainda precisa de revisão linguística profissional, especialmente para as partículas e a naturalidade do japonês.
 - A voz depende das vozes instaladas no navegador/sistema e pode não existir em todos os dispositivos.
-- A opção de anúncio recompensado está preparada na loja, mas permanece indisponível até integrar uma rede de anúncios. A recompensa deve ser concedida apenas após o SDK confirmar a conclusão do anúncio.
-- Para habilitar uma rede compatível, disponibilize `window.LingoPulseRewardedAds.showRewardedAd({ placementId: 'life-refill' })` antes de carregar `js/app.js`; o método deve retornar `true` somente após a confirmação de recompensa pelo SDK.
+- Para habilitar anúncios, crie e configure inventário de anúncio recompensado para web no Google Ad Manager com recompensa de `1` unidade do tipo `life`; preencha `adUnitPath` em `js/ads-config.js` (formato `/código-da-rede/caminho-da-unidade`). A opção fica indisponível até esse caminho ser configurado. A configuração de consentimento e privacidade aplicável ao seu público também deve estar ativa no Google Ad Manager.
+- A integração web depende de navegador compatível, viewport móvel otimizada e disponibilidade de inventário. O Google Ad Manager não oferece verificação de recompensa no servidor para anúncios recompensados na web; neste MVP estático, a recompensa é concedida no cliente após o evento GPT, portanto não deve ser tratada como economia autoritativa contra adulteração.
 - A revisão espaçada é local e baseada em intervalos simples, não em um algoritmo adaptativo avançado.
 - A interação principal é por toque/clique; arrastar e soltar depende do suporte do navegador.
-- Não há contas, sincronização em nuvem, reconhecimento de pronúncia, anúncios ativos ou cobrança real. A vitrine de moedas é preparatória; não há compra ativa nem concessão de moedas por pagamento.
+- Não há contas, sincronização em nuvem, reconhecimento de pronúncia ou cobrança real. A vitrine de pacotes de moedas é preparatória; não há compra ativa nem concessão de moedas por pagamento. Anúncios reais dependem da configuração da unidade no Google Ad Manager.

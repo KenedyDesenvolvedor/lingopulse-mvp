@@ -74,7 +74,8 @@ test('XP, moedas e vidas têm progressão, gasto e vitrine de pacotes', () => {
   assert.match(html, /Nenhuma cobrança é feita nesta versão/);
   assert.match(app, /awardLessonCompletion\(state, currentPhrase\(\)\.id\)/);
   assert.match(app, /purchaseLife\(state, Date\.now\(\)\)/);
-  assert.match(html, /Anúncios recompensados ainda não estão disponíveis/);
+  assert.match(html, /O anúncio só começa quando você tocar no botão/);
   assert.match(html, /Comprar com moedas/);
   assert.match(app, /rewardLifeForAd/);
+  assert.match(html, /js\/ads-config\.js/);
 });

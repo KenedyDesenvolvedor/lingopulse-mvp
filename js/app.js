@@ -1,8 +1,10 @@
 import { LANGUAGES, PHRASES } from './phrases.js';
 import { MAX_ENERGY, ENERGY_RECHARGE_MS, LIFE_REFILL_COST, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview, getPlayerLevel, awardLessonCompletion, purchaseLife, rewardLifeForAd, restoreEnergy } from './game-logic.js';
+import { createGoogleRewardedAds } from './rewarded-ads.js';
 import { speak } from './speech.js';
 
 const $ = id => document.getElementById(id);
+const rewardedAds = createGoogleRewardedAds(window.LingoPulseAdsConfig);
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 let state = loadState(storage);
 let phraseIndex = Math.max(0, Math.min(Number(state.currentLesson) || 0, (PHRASES[state.language] || PHRASES.en).length - 1));
@@ -80,12 +82,12 @@ function renderStats() {
   $('life-refill-cost').textContent = LIFE_REFILL_COST;
   $('buy-life-button').disabled = state.energy >= MAX_ENERGY || state.coins < LIFE_REFILL_COST;
   const adButton = $('watch-ad-button');
-  const adProviderReady = typeof window.LingoPulseRewardedAds?.showRewardedAd === 'function';
+  const adProviderReady = rewardedAds.isReady();
   adButton.disabled = state.energy >= MAX_ENERGY || !adProviderReady || rewardedAdInProgress;
-  adButton.textContent = rewardedAdInProgress ? 'Carregando…' : adProviderReady ? 'Assistir anúncio' : 'Em breve';
-  adButton.setAttribute('aria-label', adProviderReady
-    ? 'Assistir anúncio recompensado para ganhar uma vida'
-    : 'Anúncio indisponível até configurar uma rede de anúncios');
+  adButton.textContent = rewardedAdInProgress ? 'Carregando…' : rewardedAds.isConfigured() ? 'Assistir anúncio' : 'Em breve';
+  adButton.setAttribute('aria-label', state.energy >= MAX_ENERGY
+    ? 'Você já tem todas as vidas'
+    : rewardedAds.isConfigured() ? 'Assistir anúncio recompensado para ganhar uma vida' : 'Anúncio indisponível até configurar o caminho da unidade do Google Ad Manager');
 }
 function formatCountdown(milliseconds) {
   const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
@@ -119,10 +121,9 @@ function buyLife() {
   }
 }
 async function watchAdForLife() {
-  const provider = window.LingoPulseRewardedAds;
   if (rewardedAdInProgress || state.energy >= MAX_ENERGY) return;
-  if (typeof provider?.showRewardedAd !== 'function') {
-    $('shop-feedback').textContent = 'Os anúncios recompensados ainda não estão configurados.';
+  if (!rewardedAds.isConfigured()) {
+    $('shop-feedback').textContent = 'Configure a unidade de anúncios do Google Ad Manager para ativar esta opção.';
     $('shop-feedback').className = 'feedback bad';
     $('shop-feedback').hidden = false;
     return;
@@ -131,17 +132,10 @@ async function watchAdForLife() {
   rewardedAdInProgress = true;
   renderStats();
   const feedback = $('shop-feedback');
-  try {
-    const completed = await provider.showRewardedAd({ placementId: 'life-refill' });
-    state = restoreEnergy(state, Date.now());
-    if (completed !== true) {
-      persist();
-      feedback.textContent = 'Anúncio não concluído. Nenhuma vida foi adicionada.';
-      feedback.className = 'feedback bad';
-      feedback.hidden = false;
-      return;
-    }
-
+  let rewardApplied = false;
+  const grantLife = () => {
+    if (rewardApplied) return;
+    rewardApplied = true;
     const reward = rewardLifeForAd(state, Date.now());
     state = reward.state;
     persist();
@@ -153,8 +147,18 @@ async function watchAdForLife() {
       $('check-button').textContent = 'Conferir resposta →';
       renderBank();
     }
+  };
+  try {
+    await rewardedAds.showRewardedAd({ placementId: 'life-refill', onReward: grantLife });
+    if (!rewardApplied) {
+      state = restoreEnergy(state, Date.now());
+      persist();
+      feedback.textContent = 'Anúncio não concluído. Nenhuma vida foi adicionada.';
+      feedback.className = 'feedback bad';
+      feedback.hidden = false;
+    }
   } catch {
-    feedback.textContent = 'Não foi possível carregar o anúncio. Nenhuma vida foi adicionada.';
+    if (!rewardApplied) feedback.textContent = 'Não foi possível carregar o anúncio. Nenhuma vida foi adicionada.';
     feedback.className = 'feedback bad';
     feedback.hidden = false;
   } finally {
