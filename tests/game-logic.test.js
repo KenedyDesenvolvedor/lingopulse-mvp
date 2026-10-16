@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createInitialState, isAnswerCorrect, loadState, normalizeWords, recordMistake, recordReview, getDueReviews, restoreEnergy, saveState, shuffleWords, getPlayerLevel, awardLessonCompletion, purchaseLife, MAX_ENERGY, ENERGY_RECHARGE_MS, REVIEW_INTERVALS_MS, STORAGE_KEY, LIFE_REFILL_COST } from '../js/game-logic.js';
+import { createInitialState, isAnswerCorrect, loadState, normalizeWords, recordMistake, recordReview, getDueReviews, restoreEnergy, saveState, shuffleWords, getPlayerLevel, awardLessonCompletion, purchaseLife, rewardLifeForAd, MAX_ENERGY, ENERGY_RECHARGE_MS, REVIEW_INTERVALS_MS, STORAGE_KEY, LIFE_REFILL_COST } from '../js/game-logic.js';
 
 test('normaliza espaços e pontuação sem mudar a ordem', () => {
   assert.equal(normalizeWords([' Hello ', 'world', '!']), 'hello world!');
@@ -61,6 +61,17 @@ test('loja troca moedas por uma vida e preserva o limite de energia', () => {
   assert.equal(purchase.state.energy, 1);
   assert.equal(purchase.state.energyUpdatedAt, 2000);
   assert.equal(purchaseLife({ ...createInitialState(0), energy: MAX_ENERGY }, 0).reason, 'full');
+});
+
+test('anúncio recompensado concede uma vida sem moedas e respeita o limite', () => {
+  const state = { ...createInitialState(0), energy: 2, coins: 30, energyUpdatedAt: 1000 };
+  const reward = rewardLifeForAd(state, 2000);
+  assert.equal(reward.ok, true);
+  assert.equal(reward.state.energy, 3);
+  assert.equal(reward.state.coins, 30);
+  assert.equal(reward.state.energyUpdatedAt, 1000);
+  assert.equal(state.energy, 2, 'não deve mutar o estado anterior');
+  assert.equal(rewardLifeForAd({ ...state, energy: MAX_ENERGY }, 2000).reason, 'full');
 });
 
 test('salva e restaura progresso com validação defensiva', () => {

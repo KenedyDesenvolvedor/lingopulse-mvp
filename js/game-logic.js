@@ -77,6 +77,20 @@ export function purchaseLife(state, now = Date.now()) {
   };
 }
 
+export function rewardLifeForAd(state, now = Date.now()) {
+  const restored = restoreEnergy(state, now);
+  if (restored.energy >= MAX_ENERGY) return { ok: false, reason: 'full', state: restored };
+  return {
+    ok: true,
+    reason: null,
+    state: {
+      ...restored,
+      energy: restored.energy + 1,
+      energyUpdatedAt: restored.energy === 0 ? now : restored.energyUpdatedAt
+    }
+  };
+}
+
 export function restoreEnergy(state, now = Date.now()) {
   const updated = { ...state };
   const rawLast = Number(updated.energyUpdatedAt);

@@ -1,5 +1,5 @@
 import { LANGUAGES, PHRASES } from './phrases.js';
-import { MAX_ENERGY, ENERGY_RECHARGE_MS, LIFE_REFILL_COST, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview, getPlayerLevel, awardLessonCompletion, purchaseLife, restoreEnergy } from './game-logic.js';
+import { MAX_ENERGY, ENERGY_RECHARGE_MS, LIFE_REFILL_COST, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview, getPlayerLevel, awardLessonCompletion, purchaseLife, rewardLifeForAd, restoreEnergy } from './game-logic.js';
 import { speak } from './speech.js';
 
 const $ = id => document.getElementById(id);
@@ -19,6 +19,7 @@ let lastPuzzleCorrect = false;
 let lastSelectedAnswer = [];
 let reviewQueue = [];
 let reviewQueueIndex = 0;
+let rewardedAdInProgress = false;
 
 const WORD_MEANINGS = {
   en: { I: 'eu', like: 'gosto', coffee: 'café', Good: 'bom/boa', morning: 'manhã', Where: 'onde', is: 'é/está', the: 'o/a', station: 'estação', need: 'preciso', help: 'ajuda', Thank: 'agradecer', you: 'você', very: 'muito', much: 'muito', bill: 'conta', please: 'por favor', am: 'estou', learning: 'aprendendo', How: 'quanto/como', does: 'auxiliar da pergunta', it: 'isso', cost: 'custar', Nice: 'prazer/agradável', to: 'a/para', meet: 'conhecer', See: 'ver/até', tomorrow: 'amanhã' },
@@ -78,6 +79,13 @@ function renderStats() {
   $('shop-balance').textContent = `Seu saldo: ${state.coins} LingoCoins`;
   $('life-refill-cost').textContent = LIFE_REFILL_COST;
   $('buy-life-button').disabled = state.energy >= MAX_ENERGY || state.coins < LIFE_REFILL_COST;
+  const adButton = $('watch-ad-button');
+  const adProviderReady = typeof window.LingoPulseRewardedAds?.showRewardedAd === 'function';
+  adButton.disabled = state.energy >= MAX_ENERGY || !adProviderReady || rewardedAdInProgress;
+  adButton.textContent = rewardedAdInProgress ? 'Carregando…' : adProviderReady ? 'Assistir anúncio' : 'Em breve';
+  adButton.setAttribute('aria-label', adProviderReady
+    ? 'Assistir anúncio recompensado para ganhar uma vida'
+    : 'Anúncio indisponível até configurar uma rede de anúncios');
 }
 function formatCountdown(milliseconds) {
   const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
@@ -108,6 +116,50 @@ function buyLife() {
     $('check-button').disabled = false;
     $('check-button').textContent = 'Conferir resposta →';
     renderBank();
+  }
+}
+async function watchAdForLife() {
+  const provider = window.LingoPulseRewardedAds;
+  if (rewardedAdInProgress || state.energy >= MAX_ENERGY) return;
+  if (typeof provider?.showRewardedAd !== 'function') {
+    $('shop-feedback').textContent = 'Os anúncios recompensados ainda não estão configurados.';
+    $('shop-feedback').className = 'feedback bad';
+    $('shop-feedback').hidden = false;
+    return;
+  }
+
+  rewardedAdInProgress = true;
+  renderStats();
+  const feedback = $('shop-feedback');
+  try {
+    const completed = await provider.showRewardedAd({ placementId: 'life-refill' });
+    state = restoreEnergy(state, Date.now());
+    if (completed !== true) {
+      persist();
+      feedback.textContent = 'Anúncio não concluído. Nenhuma vida foi adicionada.';
+      feedback.className = 'feedback bad';
+      feedback.hidden = false;
+      return;
+    }
+
+    const reward = rewardLifeForAd(state, Date.now());
+    state = reward.state;
+    persist();
+    feedback.textContent = reward.ok ? 'Anúncio concluído: 1 vida adicionada.' : 'Você já está com todas as vidas.';
+    feedback.className = reward.ok ? 'feedback good' : 'feedback bad';
+    feedback.hidden = false;
+    if (reward.ok && stage === 'puzzle') {
+      $('check-button').disabled = false;
+      $('check-button').textContent = 'Conferir resposta →';
+      renderBank();
+    }
+  } catch {
+    feedback.textContent = 'Não foi possível carregar o anúncio. Nenhuma vida foi adicionada.';
+    feedback.className = 'feedback bad';
+    feedback.hidden = false;
+  } finally {
+    rewardedAdInProgress = false;
+    renderStats();
   }
 }
 function renderProgress() {
@@ -359,6 +411,7 @@ $('level-open-button').addEventListener('click', () => { renderStats(); openDial
 $('shop-open-button').addEventListener('click', openShop);
 $('lives-open-button').addEventListener('click', openShop);
 $('buy-life-button').addEventListener('click', buyLife);
+$('watch-ad-button').addEventListener('click', watchAdForLife);
 document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
 $('back-to-learning-button').addEventListener('click', () => { renderLearn(); setStage('learn'); });
 $('language-select').addEventListener('change', event => { state.language = LANGUAGES[event.target.value] ? event.target.value : 'en'; applyLanguageTheme(); phraseIndex = 0; persist(); startLesson(true); });
