@@ -223,7 +223,7 @@ PHRASES.ru.push(
 
 const READINGS = {
   ja: {
-    ja1: 'Kōhī ga suki desu', ja2: 'Ohayō gozaimasu', ja3: 'Eki wa doko desu ka', ja4: 'Tasuke ga hitsuyō desu',
+    ja1: 'Kōhī ga suki desu', ja2: 'ohayoo gozaimasu', ja3: 'Eki wa doko desu ka', ja4: 'Tasuke ga hitsuyō desu',
     ja5: 'Dōmo arigatō gozaimasu', ja6: 'Okaikei o onegaishimasu', ja7: 'Benkyō shite imasu', ja8: 'Ikura desu ka',
     ja9: 'Hajimemashite', ja10: 'Mata ashita', ja11: 'Kūkō made no kippu ga hitsuyō desu',
     ja12: 'Chūshingai e wa dō ikeba ii desu ka', ja13: 'Yoyaku ga arimasu', ja14: 'Chikatetsu no eki wa doko desu ka',

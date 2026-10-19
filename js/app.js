@@ -86,6 +86,32 @@ function currentPhrases() {
 }
 function currentPhrase() { return currentPhrases()[phraseIndex]; }
 function targetText(phrase = currentPhrase(), language = state.language) { return phrase.answer.join(language === 'ja' ? '' : ' '); }
+function displayTargetText(phrase, language = state.language) { return phrase.answer.join(' '); }
+function applyScriptFont(element, language = state.language) {
+  const scriptLanguage = language === 'ja' ? 'ja-JP' : language === 'ru' ? 'ru-RU' : LANGUAGES[language]?.locale;
+  if (scriptLanguage) element.lang = scriptLanguage;
+  element.classList.toggle('script-text', language === 'ja' || language === 'ru');
+}
+function renderTargetPhrase(element, phrase, language = state.language) {
+  element.replaceChildren();
+  applyScriptFont(element, language);
+  const segmented = language === 'ja' || language === 'ru';
+  element.classList.toggle('segmented-phrase', segmented);
+  if (!segmented) {
+    element.removeAttribute('aria-label');
+    element.textContent = targetText(phrase, language);
+    return;
+  }
+  element.setAttribute('aria-label', displayTargetText(phrase, language));
+  phrase.answer.forEach(word => {
+    const segment = document.createElement('strong');
+    segment.className = 'script-word';
+    segment.lang = language === 'ja' ? 'ja-JP' : 'ru-RU';
+    segment.setAttribute('aria-hidden', 'true');
+    segment.textContent = word;
+    element.append(segment);
+  });
+}
 function wordMeaning(word, language = state.language) {
   const dictionary = WORD_MEANINGS[language] || {};
   const cleanWord = word.replace(/[,.!?;:¿¡]+$/u, '');
@@ -93,8 +119,8 @@ function wordMeaning(word, language = state.language) {
 }
 function readingText(phrase, language = state.language) {
   if (!phrase.reading) return '';
-  if (language === 'ja') return `Romaji: ${phrase.reading}. Vogais com macron, como ō e ū, duram um pouco mais.`;
-  if (language === 'ru') return `Leitura aproximada: ${phrase.reading}. “zh” soa como o j de “jogo”; os acentos indicam a sílaba forte.`;
+  if (language === 'ja') return `Romaji · ${phrase.reading} ("oo" ou macron, como ō/ū, indica uma vogal longa).`;
+  if (language === 'ru') return `Transliteração · ${phrase.reading}. “zh” soa como o j de “jogo”; os acentos indicam a sílaba forte.`;
   return '';
 }
 function applyLanguageTheme() {
@@ -457,7 +483,7 @@ function speakCurrent(target = 'speech-status') {
 function renderLearn() {
   const phrase = currentPhrase();
   $('learn-title').textContent = phrase.prompt;
-  $('learn-translation').textContent = targetText(phrase);
+  renderTargetPhrase($('learn-translation'), phrase);
   const reading = $('learn-reading');
   reading.textContent = readingText(phrase);
   reading.hidden = !reading.textContent;
@@ -468,7 +494,7 @@ function renderLearn() {
     const meaningText = wordMeaning(word);
     if (!meaningText) return;
     const item = document.createElement('div'); item.className = 'vocabulary-item';
-    const term = document.createElement('strong'); term.textContent = word;
+    const term = document.createElement('strong'); term.textContent = word; applyScriptFont(term);
     const meaning = document.createElement('span'); meaning.textContent = meaningText;
     item.append(term, meaning); vocab.append(item);
   });
@@ -510,15 +536,15 @@ function renderPractice() {
   options.forEach((optionPhrase, index) => {
     const option = targetText(optionPhrase);
     const button = document.createElement('button'); button.type = 'button'; button.className = 'practice-option'; button.dataset.answer = option;
-    const label = document.createElement('span'); label.textContent = option; button.append(label);
+    const label = document.createElement('span'); label.className = 'practice-option-label'; renderTargetPhrase(label, optionPhrase); button.append(label);
     if (optionPhrase.reading) {
-      const romanized = document.createElement('small'); romanized.className = 'practice-reading'; romanized.textContent = optionPhrase.reading; button.append(romanized);
+      const romanized = document.createElement('small'); romanized.className = 'practice-reading'; romanized.textContent = `Leitura: ${optionPhrase.reading}`; button.append(romanized);
     }
     button.addEventListener('click', () => {
       if (practicePassed) return;
       if (option === targetText(phrase)) {
         practicePassed = true;
-        showFeedback(`Isso mesmo! “${option}” significa “${phrase.prompt}”. O puzzle abrirá em instantes; se preferir, toque em “Continuar para o puzzle”.`, true, 'practice-feedback');
+        showFeedback(`Isso mesmo! “${displayTargetText(optionPhrase)}” significa “${phrase.prompt}”. O puzzle abrirá em instantes; se preferir, toque em “Continuar para o puzzle”.`, true, 'practice-feedback');
         [...root.children].forEach(control => { control.disabled = true; if (control.dataset.answer === targetText(phrase)) control.classList.add('correct-option'); });
         $('to-puzzle-button').disabled = false;
         $('to-puzzle-button').textContent = 'Continuar para o puzzle →';
@@ -532,7 +558,7 @@ function renderPractice() {
         button.disabled = true;
       }
     });
-    button.setAttribute('aria-label', `Opção ${index + 1}: ${option}${optionPhrase.reading ? `. Leitura: ${optionPhrase.reading}` : ''}`); root.append(button);
+    button.setAttribute('aria-label', `Opção ${index + 1}: ${displayTargetText(optionPhrase)}${optionPhrase.reading ? `. Leitura: ${optionPhrase.reading}` : ''}`); root.append(button);
   });
   if (practiceHintVisible) $('practice-feedback').hidden = false, showFeedback(phrase.hint, true, 'practice-feedback');
 }
@@ -547,7 +573,7 @@ function renderAnswer() {
   }
   selected.forEach((item, index) => {
     const button = document.createElement('button'); button.type = 'button'; button.className = 'word-tile';
-    button.textContent = item.word; button.setAttribute('aria-label', `Remover palavra ${item.word}`);
+    button.textContent = item.word; applyScriptFont(button); button.setAttribute('aria-label', `Remover palavra ${item.word}`);
     button.addEventListener('click', () => removeSelected(index));
     button.addEventListener('dragover', event => event.preventDefault());
     button.addEventListener('drop', event => { event.preventDefault(); const id = event.dataTransfer?.getData('text/plain'); moveBankWord(id, index); });
@@ -558,7 +584,7 @@ function renderBank() {
   const root = $('word-bank'); root.replaceChildren();
   bank.forEach(item => {
     const button = document.createElement('button'); button.type = 'button'; button.className = `word-tile${item.used ? ' used' : ''}`;
-    button.textContent = item.word; button.disabled = item.used || locked || state.energy <= 0; button.draggable = !item.used && !locked && state.energy > 0;
+    button.textContent = item.word; applyScriptFont(button); button.disabled = item.used || locked || state.energy <= 0; button.draggable = !item.used && !locked && state.energy > 0;
     button.setAttribute('aria-label', item.used ? `${item.word}, já selecionada` : `Adicionar palavra ${item.word}`);
     button.addEventListener('click', () => addWord(item.id));
     button.addEventListener('dragstart', event => { event.dataTransfer?.setData('text/plain', item.id); if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move'; });
@@ -616,7 +642,7 @@ function checkAnswer() {
     state = recordMistake(state, currentPhrase().id, currentPhrase().answer, answerWords, Date.now());
     persist();
     void reconcilePendingLifeGrants();
-    const correct = targetText();
+    const correct = displayTargetText(currentPhrase());
     showFeedback(`Ainda não. Sua resposta foi “${answerWords.join(' ')}”. A expressão correta é “${correct}”. ${currentPhrase().hint} Você pode corrigir e tentar novamente; cada tentativa incorreta no desafio consome 1 energia.`, false);
     if (state.energy <= 0) {
       $('check-button').textContent = 'Sem energia'; $('check-button').disabled = true;
@@ -628,7 +654,7 @@ function showReviewStage() {
   const phrase = currentPhrase();
   const mistakeRecord = state.mistakes[phrase.id];
   $('review-result').textContent = mistakeRecord ? 'Você encontrou uma dificuldade nesta expressão. Veja a resposta e a explicação; ela voltará para revisão espaçada.' : 'Muito bem! Você montou a expressão corretamente.';
-  $('review-correct').textContent = targetText(phrase);
+  renderTargetPhrase($('review-correct'), phrase);
   $('review-reading').textContent = readingText(phrase);
   $('review-reading').hidden = !$('review-reading').textContent;
   $('review-meaning').textContent = `Significado: ${phrase.prompt}`;
@@ -685,7 +711,8 @@ function openReviewQueue() {
       const card = document.createElement('article'); card.className = 'review-queue-item';
       const title = document.createElement('h3'); title.textContent = phrase.prompt;
       const detail = document.createElement('p'); detail.className = 'hint-text'; detail.textContent = `Você errou esta expressão ${item.count} vez(es). Diga a tradução em voz alta antes de revelar.`;
-      const answer = document.createElement('p'); answer.className = 'review-recall-answer'; answer.textContent = targetText(phrase, item.phraseId.slice(0, 2)); answer.hidden = true;
+      const language = item.phraseId.slice(0, 2);
+      const answer = document.createElement('p'); answer.className = 'review-recall-answer'; renderTargetPhrase(answer, phrase, language); answer.hidden = true;
       const reading = document.createElement('p'); reading.className = 'reading-guide';
       reading.textContent = readingText(phrase, item.phraseId.slice(0, 2)); reading.hidden = true;
       const explanation = document.createElement('p'); explanation.className = 'hint-text'; explanation.textContent = phrase.hint; explanation.hidden = true;

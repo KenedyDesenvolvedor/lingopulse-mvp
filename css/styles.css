@@ -23,3 +23,56 @@
 @media(max-width:540px){.learning-controls{grid-template-columns:1fr;padding:12px 16px;gap:10px}.review-recall-actions{grid-template-columns:1fr}}
 footer{flex-wrap:wrap}
 .footer-author{color:var(--muted);font-weight:600;letter-spacing:0}
+
+/* Fontes e contraste reforçados para japonês e cirílico. */
+.script-text,
+.script-word {
+  font-family: "Yu Gothic UI", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", "Segoe UI", Arial, sans-serif;
+  font-synthesis: none;
+  font-kerning: normal;
+  letter-spacing: .025em;
+}
+:lang(ru).script-text,
+:lang(ru) .script-word {
+  font-family: "Segoe UI", "Noto Sans", Arial, "Liberation Sans", sans-serif;
+  letter-spacing: .01em;
+}
+.segmented-phrase {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .1em .42em;
+  line-height: 1.75;
+  letter-spacing: normal;
+}
+.segmented-phrase .script-word {
+  color: var(--script-color, var(--text));
+  font-size: 1.08em;
+  font-weight: 800;
+}
+.teaching-hero .target-phrase.segmented-phrase {
+  font-size: clamp(1.4rem, 5vw, 1.9rem);
+}
+.review-answer .target-phrase.segmented-phrase { font-size: 1.4rem; }
+.practice-option-label.segmented-phrase { display: flex; font-size: 1.08rem; }
+.reading-guide {
+  color: var(--reading-color, var(--text));
+  font-size: .98rem;
+  font-weight: 700;
+  line-height: 1.65;
+}
+.practice-reading {
+  color: var(--reading-color, var(--text));
+  font-size: .9rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+.vocabulary-item > strong.script-text { color: var(--script-color, var(--text)); font-size: 1.08rem; }
+.word-tile.script-text { font-size: 1.05rem; line-height: 1.45; }
+.word-tile.used { opacity: .62; }
+.practice-option:disabled { opacity: 1; }
+.review-recall-answer {
+  color: var(--text);
+  background: var(--panel2);
+  border-color: var(--line);
+}
