@@ -1,5 +1,7 @@
 # LingoPulse — MVP pedagógico 0.3.4
 
+**Autor: KenyDev**
+
 Protótipo web modular em HTML, CSS e JavaScript puro. O projeto agora inclui servidor local em Node.js e configuração para publicar os arquivos estáticos na Vercel.
 
 ## Executar localmente com Node.js
@@ -53,11 +55,13 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 ## Fluxo e recursos
 
 - Fluxo por expressão: aprender → praticar com ajuda → WordPuzzle → revisar erros → avançar.
-- Tela de ensino com expressão, tradução, divisão por palavras/partes, dicas e contexto de uso.
+- 30 expressões em cada um dos cinco idiomas (150 no total), com trilha completa ou seleção por tema: saudações, comida, viagens, compras, conversas, estudo, trabalho, saúde e dia a dia.
+- Ensino, alternativas, desafio e revisão exibem apoio de leitura para japonês e russo: romaji para japonês e transliteração latina aproximada, com acento tônico, para russo.
+- As lições apresentam palavras-chave, contexto de uso e observações simples de vocabulário e gramática.
 - Pronúncia opcional via Web Speech API (`speechSynthesis`) com fallback textual acessível.
 - Prática guiada com alternativas e dicas, sem consumir energia.
 - Após acertar a prática, o WordPuzzle abre automaticamente após 2,5 segundos; o botão permite avançar imediatamente.
-- WordPuzzle com dez desafios para inglês, espanhol, francês, japonês e russo.
+- WordPuzzle com 30 desafios para inglês, espanhol, francês, japonês e russo.
 - Tema visual completo muda automaticamente com o idioma: Londres em azul-marinho e cruzes britânicas; Madri em terracota, sol e azulejos; Paris em tricolor e tons de avenida; Tóquio em papel, sol vermelho e ondas; Moscou em azul-gelo, neve e tricolor.
 - Seleção por toque/clique e arrastar e soltar; as peças escolhidas podem ser removidas.
 - Feedback explicativo após respostas incorretas e revisão da resposta após cada puzzle.
@@ -69,7 +73,7 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 - Saldo de moedas compradas armazenado no Supabase, separado das moedas de progresso salvas localmente. A concessão acontece uma vez por pagamento; estornos e chargebacks removem o crédito que ainda estiver disponível.
 - Proteções no servidor: sessão assinada e cookie `HttpOnly`, solicitações de compra restritas à mesma origem, limite de três checkouts a cada cinco minutos, confirmação de webhook HMAC, valor de cada ação definido no servidor e liberação transacional idempotente.
 - Vida comprada é registrada como crédito pendente no Supabase antes de ser aplicada; o app salva o identificador local antes de confirmar ao servidor, reduzindo o risco de perder a vida se a página fechar durante a operação.
-- Revisão espaçada: erros recebem prazo de revisão (1 minuto na primeira ocorrência, 10 minutos após repetição); ao revisar, o próximo intervalo aumenta.
+- Revisão espaçada por lembrança ativa: tente recuperar a tradução antes de revelá-la e indique se lembrou; erros recebem uma nova data de revisão, e os acertos aumentam o intervalo gradualmente.
 - Progresso, idioma, energia, lições concluídas, erros e histórico de revisão salvos localmente.
 - Interface responsiva, foco visível, regiões `aria-live`, botões de teclado e suporte a `prefers-reduced-motion`.
 
@@ -77,11 +81,11 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 
 - O salvamento local fica no navegador/dispositivo e não sincroniza entre aparelhos.
 - A recarga de energia e o agendamento de revisão usam o relógio do dispositivo; sem backend, podem ser manipulados.
-- O conteúdo didático usa explicações simples e dicionário de apoio por palavra; ainda precisa de revisão linguística profissional, especialmente para as partículas e a naturalidade do japonês.
+- O conteúdo didático traz situações de uso, observações de vocabulário e gramática e guias de leitura; ainda precisa de revisão linguística profissional, especialmente para as partículas e a naturalidade do japonês e para a precisão das transliterações.
 - A voz depende das vozes instaladas no navegador/sistema e pode não existir em todos os dispositivos.
 - Para habilitar anúncios, crie e configure inventário de anúncio recompensado para web no Google Ad Manager com recompensa de `1` unidade do tipo `life`; preencha `adUnitPath` em `js/ads-config.js` (formato `/código-da-rede/caminho-da-unidade`). A opção fica indisponível até esse caminho ser configurado. A configuração de consentimento e privacidade aplicável ao seu público também deve estar ativa no Google Ad Manager.
 - A integração web depende de navegador compatível, viewport móvel otimizada e disponibilidade de inventário. O Google Ad Manager não oferece verificação de recompensa no servidor para anúncios recompensados na web; neste MVP estático, a recompensa é concedida no cliente após o evento GPT, portanto não deve ser tratada como economia autoritativa contra adulteração.
-- A revisão espaçada é local e baseada em intervalos simples, não em um algoritmo adaptativo avançado.
+- A revisão espaçada é local e usa autoavaliação e intervalos simples, não um algoritmo adaptativo avançado.
 - A interação principal é por toque/clique; arrastar e soltar depende do suporte do navegador.
 - Não há contas de usuário. As compras ficam associadas a um identificador seguro no cookie deste navegador; limpar os cookies ou trocar de dispositivo não transfere o saldo comprado.
 - A cobrança requer configurar as contas e variáveis de produção abaixo. O saldo didático e a energia continuam no navegador e podem ser alterados localmente; o saldo de moedas pagas e a confirmação da compra permanecem no servidor. Anúncios reais dependem da configuração da unidade no Google Ad Manager.

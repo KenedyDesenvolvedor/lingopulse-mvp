@@ -1,4 +1,4 @@
-import { LANGUAGES, PHRASES } from './phrases.js';
+import { LANGUAGES, PHRASES, TOPICS } from './phrases.js';
 import { MAX_ENERGY, ENERGY_RECHARGE_MS, LIFE_REFILL_COST, createInitialState, loadState, saveState, shuffleWords, isAnswerCorrect, recordMistake, getDueReviews, recordReview, getPlayerLevel, awardLessonCompletion, purchaseLife, rewardLifeForAd, restoreEnergy } from './game-logic.js';
 import { createGoogleRewardedAds } from './rewarded-ads.js';
 import { speak } from './speech.js';
@@ -26,6 +26,7 @@ let rewardedAdInProgress = false;
 let purchasedCoinBalance = 0;
 let paymentsEnabled = false;
 let checkoutInProgress = false;
+let selectedTopic = 'all';
 
 const WORD_MEANINGS = {
   en: { I: 'eu', like: 'gosto', coffee: 'café', Good: 'bom/boa', morning: 'manhã', Where: 'onde', is: 'é/está', the: 'o/a', station: 'estação', need: 'preciso', help: 'ajuda', Thank: 'agradecer', you: 'você', very: 'muito', much: 'muito', bill: 'conta', please: 'por favor', am: 'estou', learning: 'aprendendo', How: 'quanto/como', does: 'auxiliar da pergunta', it: 'isso', cost: 'custar', Nice: 'prazer/agradável', to: 'a/para', meet: 'conhecer', See: 'ver/até', tomorrow: 'amanhã' },
@@ -34,6 +35,40 @@ const WORD_MEANINGS = {
   ja: { 'コーヒー': 'café', 'が': 'partícula que marca o sujeito/tema do gostar', '好き': 'gostar', 'です': 'é/forma educada', 'おはよう': 'bom dia (informal)', 'ございます': 'forma respeitosa', '駅': 'estação', 'は': 'partícula de tópico', 'どこ': 'onde', 'ですか': 'forma de pergunta educada', '助け': 'ajuda', '必要': 'necessário', 'どうも': 'muito/obrigado', 'ありがとう': 'obrigado(a)', 'お会計': 'a conta', 'お願いします': 'por favor', '勉強': 'estudo', 'して': 'fazendo', 'います': 'estar (ação em andamento)', 'いくら': 'quanto', 'はじめまして': 'prazer em conhecer', 'また': 'até/outra vez', '明日': 'amanhã' },
   ru: { 'Мне': 'a mim; em russo, é a forma usada com “нравится”', 'нравится': 'agrada', 'кофе.': 'café', 'Доброе': 'bom (forma neutra)', 'утро!': 'manhã', 'Где': 'onde', 'находится': 'fica/localiza-se', 'вокзал?': 'estação ferroviária', 'нужна': 'é necessária (forma feminina)', 'помощь.': 'ajuda', 'Большое': 'grande/muito', 'спасибо!': 'obrigado(a)', 'Счёт,': 'conta', 'пожалуйста.': 'por favor', 'Я': 'eu', 'учусь.': 'estudo/aprendo', 'Сколько': 'quanto', 'это': 'isto', 'стоит?': 'custa?', 'Приятно': 'agradável', 'познакомиться!': 'conhecer alguém', 'До': 'até', 'завтра!': 'amanhã' }
 };
+
+Object.assign(WORD_MEANINGS.en, {
+  ticket: 'passagem', airport: 'aeroporto', city: 'cidade', center: 'centro', reservation: 'reserva', subway: 'metrô',
+  table: 'mesa', two: 'duas pessoas', menu: 'cardápio', food: 'comida', delicious: 'delicioso(a)', vegetarian: 'vegetariano(a)',
+  option: 'opção', pay: 'pagar', card: 'cartão', looking: 'olhando', speak: 'falar', slowly: 'devagar', repeat: 'repetir',
+  understand: 'entender', word: 'palavra', meeting: 'reunião', ten: 'dez', finish: 'terminar', assignment: 'tarefa',
+  doctor: 'médico(a)', feel: 'sentir', well: 'bem', restroom: 'banheiro', time: 'hora'
+});
+Object.assign(WORD_MEANINGS.es, {
+  billete: 'passagem', aeropuerto: 'aeroporto', centro: 'centro', ciudad: 'cidade', reserva: 'reserva', estación: 'estação',
+  metro: 'metrô', mesa: 'mesa', personas: 'pessoas', carta: 'cardápio', comida: 'comida', deliciosa: 'deliciosa',
+  vegetariana: 'vegetariana', pagar: 'pagar', tarjeta: 'cartão', mirando: 'olhando', despacio: 'devagar', palabra: 'palavra',
+  reunión: 'reunião', tarea: 'tarefa', médico: 'médico', baño: 'banheiro', hora: 'hora'
+});
+Object.assign(WORD_MEANINGS.fr, {
+  billet: 'passagem', aéroport: 'aeroporto', 'centre-ville': 'centro da cidade', réservation: 'reserva', station: 'estação',
+  métro: 'metrô', table: 'mesa', deux: 'duas pessoas', carte: 'cardápio', repas: 'refeição', délicieux: 'delicioso',
+  végétarienne: 'vegetariana', payer: 'pagar', 'celui-ci': 'este aqui', regarde: 'olhando', lentement: 'devagar',
+  répéter: 'repetir', comprends: 'entendo', mot: 'palavra', réunion: 'reunião', devoir: 'tarefa', médecin: 'médico',
+  toilettes: 'banheiro', heure: 'hora'
+});
+Object.assign(WORD_MEANINGS.ja, {
+  '空港': 'aeroporto', '切符': 'passagem', '中心街': 'centro da cidade', '予約': 'reserva', '地下鉄': 'metrô', '二人': 'duas pessoas',
+  'テーブル': 'mesa', 'メニュー': 'cardápio', '料理': 'comida/prato', 'おいしい': 'saboroso', 'ベジタリアン': 'vegetariano(a)',
+  'カード': 'cartão', '見ている': 'olhando', 'ゆっくり': 'devagar', '言葉': 'palavra', '十時': 'dez horas', '会議': 'reunião',
+  '課題': 'tarefa', '医者': 'médico(a)', '気分': 'estado de espírito', 'トイレ': 'banheiro', '何時': 'que horas'
+});
+Object.assign(WORD_MEANINGS.ru, {
+  'билет': 'passagem', 'аэропорта': 'aeroporto', 'центра': 'centro', 'бронь': 'reserva', 'станция': 'estação', 'метро': 'metrô',
+  'Столик': 'mesa', 'двоих': 'duas pessoas', 'посмотреть': 'ver', 'меню': 'cardápio', 'Еда': 'comida', 'вкусная': 'saborosa',
+  'вегетарианские': 'vegetarianos', 'блюда': 'pratos', 'оплатить': 'pagar', 'картой': 'com cartão', 'смотрю': 'olhando',
+  'говорить': 'falar', 'помедленнее': 'mais devagar', 'Повторите': 'repita', 'понимаю': 'entendo', 'слово': 'palavra',
+  'встреча': 'reunião', 'десять': 'dez', 'задание': 'tarefa', 'врач': 'médico(a)', 'чувствую': 'sinto', 'туалет': 'banheiro'
+});
 
 const LEVEL_TITLES = ['Aprendiz', 'Explorador', 'Viajante', 'Poliglota', 'Mestre'];
 
@@ -45,9 +80,23 @@ const COUNTRY_THEMES = {
   ru: { country: 'Rússia', caption: 'Moscou · cúpulas coloridas e inverno', motif: '🏰', color: '#dfe9f3' }
 };
 
-function currentPhrases() { return PHRASES[state.language] || PHRASES.en; }
+function currentPhrases() {
+  const phrases = PHRASES[state.language] || PHRASES.en;
+  return selectedTopic === 'all' ? phrases : phrases.filter(phrase => phrase.topic === selectedTopic);
+}
 function currentPhrase() { return currentPhrases()[phraseIndex]; }
-function targetText(phrase = currentPhrase()) { return phrase.answer.join(state.language === 'ja' ? '' : ' '); }
+function targetText(phrase = currentPhrase(), language = state.language) { return phrase.answer.join(language === 'ja' ? '' : ' '); }
+function wordMeaning(word, language = state.language) {
+  const dictionary = WORD_MEANINGS[language] || {};
+  const cleanWord = word.replace(/[,.!?;:¿¡]+$/u, '');
+  return dictionary[word] || dictionary[cleanWord] || '';
+}
+function readingText(phrase, language = state.language) {
+  if (!phrase.reading) return '';
+  if (language === 'ja') return `Romaji: ${phrase.reading}. Vogais com macron, como ō e ū, duram um pouco mais.`;
+  if (language === 'ru') return `Leitura aproximada: ${phrase.reading}. “zh” soa como o j de “jogo”; os acentos indicam a sílaba forte.`;
+  return '';
+}
 function applyLanguageTheme() {
   const language = LANGUAGES[state.language] ? state.language : 'en';
   const theme = COUNTRY_THEMES[language];
@@ -59,7 +108,14 @@ function applyLanguageTheme() {
   $('country-banner').setAttribute('aria-label', `Tema cultural: ${theme.country}. ${theme.caption}`);
   document.querySelector('meta[name="theme-color"]').content = theme.color;
 }
-function persist() { state.currentLesson = Math.max(0, Math.min(phraseIndex, currentPhrases().length - 1)); const saved = saveState(storage, state); renderStats(); renderReviewCount(); return saved; }
+function persist() {
+  const catalog = PHRASES[state.language] || PHRASES.en;
+  const catalogIndex = catalog.findIndex(phrase => phrase.id === currentPhrase()?.id);
+  state.currentLesson = Math.max(0, catalogIndex);
+  const saved = saveState(storage, state);
+  renderStats(); renderReviewCount();
+  return saved;
+}
 function renderStats() {
   const progress = getPlayerLevel(state.xp);
   $('xp-value').textContent = `${state.xp} XP`;
@@ -402,38 +458,68 @@ function renderLearn() {
   const phrase = currentPhrase();
   $('learn-title').textContent = phrase.prompt;
   $('learn-translation').textContent = targetText(phrase);
+  const reading = $('learn-reading');
+  reading.textContent = readingText(phrase);
+  reading.hidden = !reading.textContent;
   $('learn-emoji').textContent = phrase.emoji;
   $('learn-pronunciation').textContent = state.language === 'ja' ? 'Ouça o ritmo da expressão japonesa e repita devagar.' : 'Ouça a pronúncia e repita em voz alta, se quiser.';
   const vocab = $('vocabulary-list'); vocab.replaceChildren();
   phrase.answer.forEach(word => {
+    const meaningText = wordMeaning(word);
+    if (!meaningText) return;
     const item = document.createElement('div'); item.className = 'vocabulary-item';
     const term = document.createElement('strong'); term.textContent = word;
-    const meaning = document.createElement('span'); meaning.textContent = WORD_MEANINGS[state.language]?.[word] || 'parte da expressão';
+    const meaning = document.createElement('span'); meaning.textContent = meaningText;
     item.append(term, meaning); vocab.append(item);
   });
-  $('learn-example').textContent = `Expressão: “${targetText(phrase)}”. Significado: “${phrase.prompt}”. ${phrase.hint}`;
-  $('learn-tip').textContent = `Dica de estudo: ouça a expressão, observe cada parte e tente repetir. ${phrase.hint}`;
+  $('vocabulary-block').hidden = vocab.children.length === 0;
+  const topicContext = {
+    greetings: 'Use em uma saudação ou despedida.', food: 'Use ao pedir comida ou bebida em um café ou restaurante.',
+    travel: 'Use para pedir informações e se deslocar.', shopping: 'Use em uma loja ou ao perguntar sobre preços.',
+    conversation: 'Use para manter uma conversa e se fazer entender.', study: 'Use para falar sobre seu aprendizado ou uma tarefa de estudo.',
+    work: 'Use ao conversar sobre compromissos e tarefas de trabalho.', emergency: 'Use para pedir ajuda ou comunicar uma necessidade urgente.',
+    wellbeing: 'Use para explicar como você está se sentindo.', daily: 'Use em uma conversa do dia a dia.'
+  };
+  $('learn-example').textContent = phrase.context || topicContext[phrase.topic] || topicContext.daily;
+  $('learn-tip').textContent = phrase.hint;
   $('speech-status').textContent = 'Você pode ouvir a expressão quantas vezes quiser. O áudio não é obrigatório.';
 }
 function renderPractice() {
   const phrase = currentPhrase();
   $('practice-prompt').textContent = phrase.prompt;
+  $('practice-reading-note').textContent = state.language === 'ja'
+    ? 'As opções mostram o romaji junto da escrita japonesa; use o áudio para ouvir o ritmo.'
+    : state.language === 'ru'
+      ? 'As opções mostram a leitura em letras latinas; os acentos ajudam a localizar a sílaba forte.'
+      : 'Escolha uma opção. Aqui você pode aprender com as dicas, sem perder energia.';
   $('practice-feedback').hidden = true;
   $('practice-hint-button').textContent = practiceHintVisible ? 'Ocultar dica' : 'Ver dica';
   $('practice-hint-button').setAttribute('aria-expanded', String(practiceHintVisible));
   $('to-puzzle-button').disabled = !practicePassed;
   $('to-puzzle-button').textContent = practicePassed ? 'Continuar para o puzzle →' : 'Responda para continuar';
-  const others = currentPhrases().filter(item => item.id !== phrase.id).slice(0, 2).map(item => targetText(item));
-  const options = shuffleWords([targetText(phrase), ...others]);
+  const catalog = PHRASES[state.language] || PHRASES.en;
+  const sameTopic = catalog.filter(item => item.id !== phrase.id && item.topic === phrase.topic);
+  const otherPhrases = catalog.filter(item => item.id !== phrase.id && item.topic !== phrase.topic);
+  const distractors = [];
+  for (const candidate of [...shuffleWords(sameTopic), ...shuffleWords(otherPhrases)]) {
+    if (!distractors.some(item => targetText(item) === targetText(candidate))) distractors.push(candidate);
+    if (distractors.length === 2) break;
+  }
+  const options = shuffleWords([phrase, ...distractors]);
   const root = $('practice-options'); root.replaceChildren();
-  options.forEach((option, index) => {
-    const button = document.createElement('button'); button.type = 'button'; button.className = 'practice-option'; button.textContent = option;
+  options.forEach((optionPhrase, index) => {
+    const option = targetText(optionPhrase);
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'practice-option'; button.dataset.answer = option;
+    const label = document.createElement('span'); label.textContent = option; button.append(label);
+    if (optionPhrase.reading) {
+      const romanized = document.createElement('small'); romanized.className = 'practice-reading'; romanized.textContent = optionPhrase.reading; button.append(romanized);
+    }
     button.addEventListener('click', () => {
       if (practicePassed) return;
       if (option === targetText(phrase)) {
         practicePassed = true;
         showFeedback(`Isso mesmo! “${option}” significa “${phrase.prompt}”. O puzzle abrirá em instantes; se preferir, toque em “Continuar para o puzzle”.`, true, 'practice-feedback');
-        [...root.children].forEach(control => { control.disabled = true; if (control.textContent === option) control.classList.add('correct-option'); });
+        [...root.children].forEach(control => { control.disabled = true; if (control.dataset.answer === targetText(phrase)) control.classList.add('correct-option'); });
         $('to-puzzle-button').disabled = false;
         $('to-puzzle-button').textContent = 'Continuar para o puzzle →';
         practiceAdvanceTimer = window.setTimeout(() => {
@@ -441,11 +527,12 @@ function renderPractice() {
           if (stage === 'practice' && practicePassed) startPuzzle();
         }, 2500);
       } else {
-        showFeedback(`Ainda não. A expressão procurada significa “${phrase.prompt}”. ${practiceHintVisible ? phrase.hint : 'Use “Ver dica” para receber uma pista.'}`, false, 'practice-feedback');
+        showFeedback(`Essa opção não combina. Tente outra; você pode pedir uma dica e não perde energia nesta etapa. ${practiceHintVisible ? phrase.hint : ''}`, false, 'practice-feedback');
         button.classList.add('wrong-option');
+        button.disabled = true;
       }
     });
-    button.setAttribute('aria-label', `Opção ${index + 1}: ${option}`); root.append(button);
+    button.setAttribute('aria-label', `Opção ${index + 1}: ${option}${optionPhrase.reading ? `. Leitura: ${optionPhrase.reading}` : ''}`); root.append(button);
   });
   if (practiceHintVisible) $('practice-feedback').hidden = false, showFeedback(phrase.hint, true, 'practice-feedback');
 }
@@ -481,6 +568,8 @@ function renderBank() {
 function renderPuzzle() {
   const phrase = currentPhrase();
   $('prompt-text').textContent = phrase.prompt;
+  $('puzzle-reading').textContent = readingText(phrase);
+  $('puzzle-reading').hidden = !$('puzzle-reading').textContent;
   $('hint-text').textContent = phrase.hint;
   $('prompt-emoji').textContent = phrase.emoji;
   $('feedback').hidden = true; $('feedback').textContent = ''; $('feedback').className = 'feedback';
@@ -540,8 +629,16 @@ function showReviewStage() {
   const mistakeRecord = state.mistakes[phrase.id];
   $('review-result').textContent = mistakeRecord ? 'Você encontrou uma dificuldade nesta expressão. Veja a resposta e a explicação; ela voltará para revisão espaçada.' : 'Muito bem! Você montou a expressão corretamente.';
   $('review-correct').textContent = targetText(phrase);
+  $('review-reading').textContent = readingText(phrase);
+  $('review-reading').hidden = !$('review-reading').textContent;
   $('review-meaning').textContent = `Significado: ${phrase.prompt}`;
-  $('review-explanation').textContent = `${phrase.hint} Revise as partes: ${phrase.answer.map(word => `${word} (${WORD_MEANINGS[state.language]?.[word] || 'parte da expressão'})`).join(' · ')}.`;
+  const glosses = phrase.answer.map(word => {
+    const meaning = wordMeaning(word);
+    return meaning ? `${word} (${meaning})` : '';
+  }).filter(Boolean);
+  $('review-explanation').textContent = glosses.length
+    ? `${phrase.hint} Palavras-chave: ${glosses.join(' · ')}.`
+    : phrase.hint;
   $('review-your-answer').textContent = mistakeRecord?.lastAnswer?.length ? `Última tentativa incorreta: ${mistakeRecord.lastAnswer.join(' ')}` : (lastSelectedAnswer.length ? `Sua resposta: ${lastSelectedAnswer.join(' ')}` : 'Você concluiu a prática guiada.');
   const mistake = state.mistakes[phrase.id];
   $('review-schedule').textContent = mistake ? `Esta expressão foi adicionada à revisão espaçada. Próxima revisão prevista: ${new Date(mistake.dueAt).toLocaleString()}.` : 'Continue praticando. Se uma expressão ficar difícil, ela será adicionada à revisão espaçada.';
@@ -563,7 +660,8 @@ function nextLesson() {
 function finishLesson() {
   $('progress-fill').style.width = '100%'; $('lesson-progress').setAttribute('aria-valuenow', String(currentPhrases().length));
   $('question-counter').textContent = 'TRILHA CONCLUÍDA';
-  $('result-summary').textContent = `Você concluiu ${currentPhrases().length} lições de ${LANGUAGES[state.language].label}. As expressões difíceis ficam disponíveis para revisão espaçada.`;
+  const trackName = selectedTopic === 'all' ? `a trilha completa de ${LANGUAGES[state.language].label}` : `o tema ${TOPICS[selectedTopic].toLowerCase()} em ${LANGUAGES[state.language].label}`;
+  $('result-summary').textContent = `Você concluiu ${currentPhrases().length} lições de ${trackName}. As expressões difíceis ficam disponíveis para revisão espaçada.`;
   $('result-xp').textContent = `+${sessionXP} XP`; $('result-coins').textContent = `+${sessionCoins} moedas`;
   const dialog = $('result-dialog'); if (typeof dialog.showModal === 'function') dialog.showModal(); else window.alert('Trilha concluída!');
 }
@@ -577,7 +675,7 @@ function openReviewQueue() {
   reviewQueue = getDueReviews(state);
   reviewQueueIndex = 0;
   const root = $('review-queue-list'); root.replaceChildren();
-  $('review-queue-description').textContent = reviewQueue.length ? `${reviewQueue.length} expressão(ões) chegou(aram) ao momento de revisar.` : 'Nenhuma revisão está pendente agora. As expressões difíceis aparecerão aqui no horário programado.';
+  $('review-queue-description').textContent = reviewQueue.length ? `${reviewQueue.length} expressão(ões) chegou(aram) ao momento de revisar. Tente lembrar da tradução antes de revelar a resposta; a revisão não consome energia.` : 'Nenhuma revisão está pendente agora. As expressões difíceis aparecerão aqui no horário programado.';
   if (!reviewQueue.length) {
     const p = document.createElement('p'); p.className = 'status-message'; p.textContent = 'Você pode continuar a trilha enquanto a memória consolida o que aprendeu.'; root.append(p);
   } else {
@@ -586,14 +684,33 @@ function openReviewQueue() {
       if (!phrase) return;
       const card = document.createElement('article'); card.className = 'review-queue-item';
       const title = document.createElement('h3'); title.textContent = phrase.prompt;
-      const answer = document.createElement('p'); answer.textContent = phrase.answer.join(' ');
-      const detail = document.createElement('p'); detail.className = 'hint-text'; detail.textContent = `Você errou esta expressão ${item.count} vez(es).`;
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'secondary-button'; button.textContent = 'Marcar como revisada';
-      button.addEventListener('click', () => { state = recordReview(state, item.phraseId); persist(); card.remove(); $('review-queue-description').textContent = 'Revisão salva. O sistema vai agendar uma próxima revisão mais adiante.'; if (!$('review-queue-list').children.length) { const empty = document.createElement('p'); empty.className = 'status-message'; empty.textContent = 'Tudo revisado por agora. Bom trabalho!'; $('review-queue-list').append(empty); } });
-      card.append(title, answer, detail, button); root.append(card);
+      const detail = document.createElement('p'); detail.className = 'hint-text'; detail.textContent = `Você errou esta expressão ${item.count} vez(es). Diga a tradução em voz alta antes de revelar.`;
+      const answer = document.createElement('p'); answer.className = 'review-recall-answer'; answer.textContent = targetText(phrase, item.phraseId.slice(0, 2)); answer.hidden = true;
+      const reading = document.createElement('p'); reading.className = 'reading-guide';
+      reading.textContent = readingText(phrase, item.phraseId.slice(0, 2)); reading.hidden = true;
+      const explanation = document.createElement('p'); explanation.className = 'hint-text'; explanation.textContent = phrase.hint; explanation.hidden = true;
+      const reveal = document.createElement('button'); reveal.type = 'button'; reveal.className = 'secondary-button'; reveal.textContent = 'Revelar tradução';
+      const actions = document.createElement('div'); actions.className = 'review-recall-actions'; actions.hidden = true;
+      const remembered = document.createElement('button'); remembered.type = 'button'; remembered.className = 'primary-button'; remembered.textContent = 'Eu lembrei';
+      const forgotten = document.createElement('button'); forgotten.type = 'button'; forgotten.className = 'secondary-button'; forgotten.textContent = 'Preciso revisar';
+      reveal.addEventListener('click', () => { answer.hidden = false; reading.hidden = !reading.textContent; explanation.hidden = false; reveal.hidden = true; actions.hidden = false; });
+      remembered.addEventListener('click', () => { state = recordReview(state, item.phraseId); persist(); removeReviewCard(card, root); });
+      forgotten.addEventListener('click', () => { state = recordMistake(state, item.phraseId, phrase.answer, [], Date.now()); persist(); removeReviewCard(card, root); });
+      actions.append(remembered, forgotten);
+      card.append(title, detail, reveal, answer, reading, explanation, actions); root.append(card);
     });
   }
   setStage('queue');
+}
+function removeReviewCard(card, root) {
+  card.remove();
+  const remaining = root.querySelectorAll('.review-queue-item').length;
+  $('review-queue-description').textContent = remaining
+    ? `Revisão salva. Restam ${remaining} expressão(ões) nesta sessão.`
+    : 'Tudo revisado por agora. Bom trabalho!';
+  if (!remaining) {
+    const empty = document.createElement('p'); empty.className = 'status-message'; empty.textContent = 'As próximas revisões serão agendadas conforme sua resposta.'; root.append(empty);
+  }
 }
 
 $('to-practice-button').addEventListener('click', () => { practicePassed = false; practiceHintVisible = false; renderPractice(); setStage('practice'); });
@@ -628,6 +745,12 @@ window.setInterval(() => {
   else renderStats();
 }, 1000);
 $('language-select').value = LANGUAGES[state.language] ? state.language : 'en';
+$('topic-select').value = selectedTopic;
+$('topic-select').addEventListener('change', event => {
+  selectedTopic = TOPICS[event.target.value] ? event.target.value : 'all';
+  phraseIndex = 0;
+  startLesson(true);
+});
 applyLanguageTheme();
 renderStats(); renderReviewCount(); renderLearn(); setStage('learn');
 initializePayments();

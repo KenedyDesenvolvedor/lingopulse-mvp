@@ -158,7 +158,7 @@ export function recordReview(state, phraseId, now = Date.now()) {
   const existing = state.mistakes?.[phraseId];
   if (!existing) return state;
   const reviewCount = (Number(existing.reviewCount) || 0) + 1;
-  const interval = REVIEW_INTERVALS_MS[Math.min(reviewCount + 1, REVIEW_INTERVALS_MS.length - 1)];
+  const interval = REVIEW_INTERVALS_MS[Math.min(reviewCount, REVIEW_INTERVALS_MS.length - 1)];
   return {
     ...state,
     mistakes: { ...state.mistakes, [phraseId]: { ...existing, reviewCount, lastReviewedAt: now, dueAt: now + interval } },
