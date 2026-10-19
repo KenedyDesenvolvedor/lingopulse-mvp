@@ -126,7 +126,22 @@ PHRASES.en.push(
   lesson('en27', 'Preciso de um médico.', ['I', 'need', 'a', 'doctor.'], '“I need a…” é uma forma direta de pedir algo essencial.', '🩺', 'emergency', 'Use para pedir atendimento médico.'),
   lesson('en28', 'Não estou me sentindo bem.', ["I", "don't", 'feel', 'well.'], '“Feel well” descreve como você está se sentindo.', '🌡️', 'wellbeing', 'Explique que está passando mal ou indisposto.'),
   lesson('en29', 'Onde fica o banheiro?', ['Where', 'is', 'the', 'restroom?'], '“Restroom” é uma forma comum de dizer banheiro nos Estados Unidos.', '🚻', 'daily', 'Pergunte onde encontrar o banheiro em um local público.'),
-  lesson('en30', 'Que horas são?', ['What', 'time', 'is', 'it?'], 'A pergunta inteira “What time is it?” significa “Que horas são?”.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.')
+  lesson('en30', 'Que horas são?', ['What', 'time', 'is', 'it?'], 'A pergunta inteira “What time is it?” significa “Que horas são?”.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.'),
+  lesson('en31', 'Estou procurando este endereço.', ['I', 'am', 'looking', 'for', 'this', 'address.'], '“I am looking for…” significa “estou procurando…”.', '📍', 'travel', 'Mostre um endereço a alguém e explique o que está procurando.'),
+  lesson('en32', 'Um copo de água, por favor.', ['A', 'glass', 'of', 'water,', 'please.'], '“A glass of…” indica um copo de alguma bebida.', '🥛', 'food', 'Peça água em um café ou restaurante.'),
+  lesson('en33', 'Dá para ir a pé até a estação?', ['Can', 'I', 'walk', 'to', 'the', 'station?'], '“Can I…?” pergunta se é possível fazer algo.', '🚶', 'travel', 'Confirme se a estação pode ser alcançada caminhando.'),
+  lesson('en34', 'Posso tirar uma foto aqui?', ['Can', 'I', 'take', 'a', 'photo', 'here?'], '“Take a photo” é a expressão usada para tirar uma foto.', '📷', 'conversation', 'Peça permissão antes de fotografar em um local.'),
+  lesson('en35', 'Hoje está muito quente.', ['It', 'is', 'very', 'hot', 'today.'], 'Em inglês, “it is” é usado para falar do clima.', '☀️', 'daily', 'Comente o clima durante uma conversa.'),
+  lesson('en36', 'Falo um pouco de português.', ['I', 'speak', 'a', 'little', 'Portuguese.'], '“A little” significa “um pouco”.', '🗣️', 'conversation', 'Explique quais idiomas você consegue falar.'),
+  lesson('en37', 'Vou esperar aqui.', ['I', 'will', 'wait', 'here.'], '“Will” pode indicar uma ação que você fará em seguida.', '⏳', 'daily', 'Avise alguém onde você vai esperar.'),
+  lesson('en38', 'Quero confirmar a reserva.', ['I', 'want', 'to', 'confirm', 'the', 'reservation.'], 'Depois de “want”, use “to” antes de outro verbo.', '🛎️', 'travel', 'Confirme os detalhes de uma reserva em um hotel.'),
+  lesson('en39', 'O que esta palavra significa?', ['What', 'does', 'this', 'word', 'mean?'], 'A estrutura “What does … mean?” pergunta o significado de algo.', '📖', 'study', 'Pergunte o significado de uma palavra nova.'),
+  lesson('en40', 'O que você recomenda?', ['What', 'do', 'you', 'recommend?'], '“Recommend” significa recomendar ou sugerir.', '💡', 'food', 'Peça uma sugestão a alguém em um restaurante ou loja.'),
+  lesson('en41', 'Vocês aceitam cartão?', ['Do', 'you', 'accept', 'cards?'], 'Use “Do you…?” para fazer uma pergunta no presente.', '💳', 'shopping', 'Pergunte sobre formas de pagamento antes de comprar.'),
+  lesson('en42', 'Preciso de um lugar para descansar.', ['I', 'need', 'a', 'place', 'to', 'rest.'], '“A place to…” indica um lugar onde você pode fazer algo.', '🪑', 'wellbeing', 'Peça ajuda para encontrar um local tranquilo.'),
+  lesson('en43', 'Por favor, escreva isso para mim.', ['Please', 'write', 'that', 'down', 'for', 'me.'], '“Write down” significa anotar ou registrar por escrito.', '✍️', 'study', 'Peça que anotem uma informação importante.'),
+  lesson('en44', 'O ponto de ônibus fica perto.', ['The', 'bus', 'stop', 'is', 'nearby.'], '“Nearby” significa perto ou nas proximidades.', '🚌', 'travel', 'Pergunte ou informe onde fica o ponto de ônibus.'),
+  lesson('en45', 'Até a semana que vem!', ['See', 'you', 'next', 'week!'], '“Next week” significa “na próxima semana”.', '👋', 'greetings', 'Despeça-se de alguém que você verá na próxima semana.')
 );
 
 PHRASES.es.push(
@@ -149,7 +164,22 @@ PHRASES.es.push(
   lesson('es27', 'Preciso de um médico.', ['Necesito', 'un', 'médico.'], '“Necesito un…” é uma forma direta de pedir algo essencial.', '🩺', 'emergency', 'Use para pedir atendimento médico.'),
   lesson('es28', 'Não estou me sentindo bem.', ['No', 'me', 'encuentro', 'bien.'], '“No me encuentro bien” é uma forma comum de dizer que está indisposto.', '🌡️', 'wellbeing', 'Explique que está passando mal ou indisposto.'),
   lesson('es29', 'Onde fica o banheiro?', ['¿Dónde', 'está', 'el', 'baño?'], '“¿Dónde está…?” também serve para perguntar onde fica um lugar.', '🚻', 'daily', 'Pergunte onde encontrar o banheiro em um local público.'),
-  lesson('es30', 'Que horas são?', ['¿Qué', 'hora', 'es?'], 'A pergunta “¿Qué hora es?” significa “Que horas são?”.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.')
+  lesson('es30', 'Que horas são?', ['¿Qué', 'hora', 'es?'], 'A pergunta “¿Qué hora es?” significa “Que horas são?”.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.'),
+  lesson('es31', 'Estou procurando este endereço.', ['Estoy', 'buscando', 'esta', 'dirección.'], '“Estoy buscando” significa “estou procurando”.', '📍', 'travel', 'Mostre um endereço a alguém e explique o que está procurando.'),
+  lesson('es32', 'Um copo de água, por favor.', ['Un', 'vaso', 'de', 'agua,', 'por', 'favor.'], '“Un vaso de…” indica um copo de alguma bebida.', '🥛', 'food', 'Peça água em um café ou restaurante.'),
+  lesson('es33', 'Dá para ir a pé até a estação?', ['¿Se', 'puede', 'ir', 'a', 'pie', 'hasta', 'la', 'estación?'], '“A pie” significa “a pé”.', '🚶', 'travel', 'Confirme se a estação pode ser alcançada caminhando.'),
+  lesson('es34', 'Posso tirar uma foto aqui?', ['¿Puedo', 'hacer', 'una', 'foto', 'aquí?'], '“¿Puedo…?” pergunta se você pode fazer algo.', '📷', 'conversation', 'Peça permissão antes de fotografar em um local.'),
+  lesson('es35', 'Hoje está muito quente.', ['Hoy', 'hace', 'mucho', 'calor.'], 'Para falar do clima, o espanhol usa “hace calor”.', '☀️', 'daily', 'Comente o clima durante uma conversa.'),
+  lesson('es36', 'Falo um pouco de português.', ['Hablo', 'un', 'poco', 'de', 'portugués.'], '“Un poco de” significa “um pouco de”.', '🗣️', 'conversation', 'Explique quais idiomas você consegue falar.'),
+  lesson('es37', 'Vou esperar aqui.', ['Voy', 'a', 'esperar', 'aquí.'], '“Ir a” seguido de um verbo expressa uma ação futura próxima.', '⏳', 'daily', 'Avise alguém onde você vai esperar.'),
+  lesson('es38', 'Quero confirmar a reserva.', ['Quiero', 'confirmar', 'la', 'reserva.'], '“Quiero” significa “quero”; depois dele vem o infinitivo.', '🛎️', 'travel', 'Confirme os detalhes de uma reserva em um hotel.'),
+  lesson('es39', 'O que esta palavra significa?', ['¿Qué', 'significa', 'esta', 'palabra?'], '“¿Qué significa…?” pergunta o significado de algo.', '📖', 'study', 'Pergunte o significado de uma palavra nova.'),
+  lesson('es40', 'O que você recomenda?', ['¿Qué', 'me', 'recomienda?'], '“Recomendar” é recomendar ou sugerir; “me” indica para mim.', '💡', 'food', 'Peça uma sugestão a alguém em um restaurante ou loja.'),
+  lesson('es41', 'Vocês aceitam cartão?', ['¿Aceptan', 'tarjeta?'], '“¿Aceptan…?” pergunta se um estabelecimento aceita algo.', '💳', 'shopping', 'Pergunte sobre formas de pagamento antes de comprar.'),
+  lesson('es42', 'Preciso de um lugar para descansar.', ['Necesito', 'un', 'lugar', 'para', 'descansar.'], '“Necesito” expressa necessidade; “descansar” significa descansar.', '🪑', 'wellbeing', 'Peça ajuda para encontrar um local tranquilo.'),
+  lesson('es43', 'Por favor, escreva isso para mim.', ['Escriba', 'eso', 'para', 'mí,', 'por', 'favor.'], '“Escriba” é uma forma educada de pedir que alguém escreva.', '✍️', 'study', 'Peça que anotem uma informação importante.'),
+  lesson('es44', 'O ponto de ônibus fica perto.', ['La', 'parada', 'de', 'autobús', 'está', 'cerca.'], '“Cerca” significa perto ou nas proximidades.', '🚌', 'travel', 'Pergunte ou informe onde fica o ponto de ônibus.'),
+  lesson('es45', 'Até a semana que vem!', ['¡Hasta', 'la', 'próxima', 'semana!'], '“Hasta la próxima semana” é uma despedida para a semana seguinte.', '👋', 'greetings', 'Despeça-se de alguém que você verá na próxima semana.')
 );
 
 PHRASES.fr.push(
@@ -172,7 +202,22 @@ PHRASES.fr.push(
   lesson('fr27', 'Preciso de um médico.', ['J’ai', 'besoin', "d’un", 'médecin.'], '“Avoir besoin de” significa “precisar de”.', '🩺', 'emergency', 'Use para pedir atendimento médico.'),
   lesson('fr28', 'Não estou me sentindo bem.', ['Je', 'ne', 'me', 'sens', 'pas', 'bien.'], '“Je me sens bien” significa “estou me sentindo bem”; “ne…pas” inverte o sentido.', '🌡️', 'wellbeing', 'Explique que está passando mal ou indisposto.'),
   lesson('fr29', 'Onde fica o banheiro?', ['Où', 'sont', 'les', 'toilettes', '?'], 'Em francês, “les toilettes” normalmente é usado no plural.', '🚻', 'daily', 'Pergunte onde encontrar o banheiro em um local público.'),
-  lesson('fr30', 'Que horas são?', ['Quelle', 'heure', 'est-il', '?'], 'A expressão “Quelle heure est-il ?” pergunta as horas.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.')
+  lesson('fr30', 'Que horas são?', ['Quelle', 'heure', 'est-il', '?'], 'A expressão “Quelle heure est-il ?” pergunta as horas.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.'),
+  lesson('fr31', 'Estou procurando este endereço.', ['Je', 'cherche', 'cette', 'adresse.'], '“Je cherche…” significa “estou procurando…”.', '📍', 'travel', 'Mostre um endereço a alguém e explique o que está procurando.'),
+  lesson('fr32', 'Um copo de água, por favor.', ['Un', 'verre', 'd’eau,', 's’il', 'vous', 'plaît.'], '“Un verre de…” indica um copo de alguma bebida.', '🥛', 'food', 'Peça água em um café ou restaurante.'),
+  lesson('fr33', 'Dá para ir a pé até a estação?', ['Peut-on', 'aller', 'à', 'pied', 'jusqu’à', 'la', 'gare', '?'], '“À pied” significa “a pé”.', '🚶', 'travel', 'Confirme se a estação pode ser alcançada caminhando.'),
+  lesson('fr34', 'Posso tirar uma foto aqui?', ['Est-ce', 'que', 'je', 'peux', 'prendre', 'une', 'photo', 'ici', '?'], '“Est-ce que je peux…?” pede permissão de forma comum.', '📷', 'conversation', 'Peça permissão antes de fotografar em um local.'),
+  lesson('fr35', 'Hoje está muito quente.', ['Il', 'fait', 'très', 'chaud', 'aujourd’hui.'], '“Il fait chaud” é a expressão usada para dizer que está quente.', '☀️', 'daily', 'Comente o clima durante uma conversa.'),
+  lesson('fr36', 'Falo um pouco de português.', ['Je', 'parle', 'un', 'peu', 'portugais.'], '“Un peu” significa “um pouco”.', '🗣️', 'conversation', 'Explique quais idiomas você consegue falar.'),
+  lesson('fr37', 'Vou esperar aqui.', ['Je', 'vais', 'attendre', 'ici.'], '“Je vais” seguido do infinitivo fala de uma ação futura próxima.', '⏳', 'daily', 'Avise alguém onde você vai esperar.'),
+  lesson('fr38', 'Quero confirmar a reserva.', ['Je', 'voudrais', 'confirmer', 'la', 'réservation.'], '“Je voudrais” é uma forma educada de dizer “eu gostaria”.', '🛎️', 'travel', 'Confirme os detalhes de uma reserva em um hotel.'),
+  lesson('fr39', 'O que esta palavra significa?', ['Que', 'signifie', 'ce', 'mot', '?'], '“Que signifie…?” pergunta o significado de algo.', '📖', 'study', 'Pergunte o significado de uma palavra nova.'),
+  lesson('fr40', 'O que você recomenda?', ['Qu’est-ce', 'que', 'vous', 'conseillez', '?'], '“Conseiller” significa aconselhar ou recomendar.', '💡', 'food', 'Peça uma sugestão a alguém em um restaurante ou loja.'),
+  lesson('fr41', 'Vocês aceitam cartão?', ['Acceptez-vous', 'la', 'carte', '?'], '“Acceptez-vous…?” pergunta educadamente se algo é aceito.', '💳', 'shopping', 'Pergunte sobre formas de pagamento antes de comprar.'),
+  lesson('fr42', 'Preciso de um lugar para descansar.', ['J’ai', 'besoin', 'd’un', 'endroit', 'pour', 'me', 'reposer.'], '“Avoir besoin de” significa precisar de algo.', '🪑', 'wellbeing', 'Peça ajuda para encontrar um local tranquilo.'),
+  lesson('fr43', 'Por favor, escreva isso para mim.', ['Écrivez', 'cela', 'pour', 'moi,', 's’il', 'vous', 'plaît.'], '“Écrivez” é uma forma educada de pedir que alguém escreva.', '✍️', 'study', 'Peça que anotem uma informação importante.'),
+  lesson('fr44', 'O ponto de ônibus fica perto.', ['L’arrêt', 'de', 'bus', 'est', 'tout', 'près.'], '“Tout près” significa bem perto.', '🚌', 'travel', 'Pergunte ou informe onde fica o ponto de ônibus.'),
+  lesson('fr45', 'Até a semana que vem!', ['À', 'la', 'semaine', 'prochaine', '!'], '“À la semaine prochaine” é uma despedida para a semana seguinte.', '👋', 'greetings', 'Despeça-se de alguém que você verá na próxima semana.')
 );
 
 PHRASES.ja.push(
@@ -195,7 +240,22 @@ PHRASES.ja.push(
   lesson('ja27', 'Preciso de um médico.', ['医者', 'が', '必要', 'です'], '“必要です” expressa uma necessidade.', '🩺', 'emergency', 'Use para pedir atendimento médico.'),
   lesson('ja28', 'Não estou me sentindo bem.', ['気分', 'が', 'よく', 'ありません'], '“気分がよくありません” é uma forma comum de dizer que está indisposto.', '🌡️', 'wellbeing', 'Explique que está passando mal ou indisposto.'),
   lesson('ja29', 'Onde fica o banheiro?', ['トイレ', 'は', 'どこ', 'ですか'], '“どこですか” pergunta onde fica um lugar.', '🚻', 'daily', 'Pergunte onde encontrar o banheiro em um local público.'),
-  lesson('ja30', 'Que horas são?', ['今', '何時', 'ですか'], '“今” significa “agora”; “何時” significa “que horas”.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.')
+  lesson('ja30', 'Que horas são?', ['今', '何時', 'ですか'], '“今” significa “agora”; “何時” significa “que horas”.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.'),
+  lesson('ja31', 'Estou procurando este endereço.', ['この', '住所', 'を', '探して', 'います'], '“探しています” significa “estou procurando”.', '📍', 'travel', 'Mostre um endereço a alguém e explique o que está procurando.'),
+  lesson('ja32', 'Um copo de água, por favor.', ['水', 'を', '一杯', 'ください'], '“ください” transforma a frase em um pedido educado.', '🥛', 'food', 'Peça água em um café ou restaurante.'),
+  lesson('ja33', 'Dá para ir a pé até a estação?', ['駅', 'まで', '歩いて', '行けます', 'か'], '“歩いて” significa “a pé”; “行けますか” pergunta se é possível ir.', '🚶', 'travel', 'Confirme se a estação pode ser alcançada caminhando.'),
+  lesson('ja34', 'Posso tirar uma foto aqui?', ['ここ', 'で', '写真', 'を', '撮って', 'も', 'いい', 'ですか'], '“～てもいいですか” pede permissão para fazer algo.', '📷', 'conversation', 'Peça permissão antes de fotografar em um local.'),
+  lesson('ja35', 'Hoje está muito quente.', ['今日', 'は', 'とても', '暑い', 'です'], '“暑い” descreve o clima quente.', '☀️', 'daily', 'Comente o clima durante uma conversa.'),
+  lesson('ja36', 'Falo um pouco de português.', ['ポルトガル語', 'を', '少し', '話します'], '“少し” significa “um pouco”.', '🗣️', 'conversation', 'Explique quais idiomas você consegue falar.'),
+  lesson('ja37', 'Vou esperar aqui.', ['ここ', 'で', '待って', 'います'], '“待っています” significa “estou esperando/vou esperar”.', '⏳', 'daily', 'Avise alguém onde você vai esperar.'),
+  lesson('ja38', 'Quero confirmar a reserva.', ['予約', 'を', '確認', 'したい', 'です'], '“～したいです” expressa que você quer fazer algo.', '🛎️', 'travel', 'Confirme os detalhes de uma reserva em um hotel.'),
+  lesson('ja39', 'O que é isto?', ['これ', 'は', '何', 'ですか'], '“何ですか” significa “o que é?”.', '❓', 'conversation', 'Pergunte sobre um objeto que você não conhece.'),
+  lesson('ja40', 'O que você recomenda?', ['おすすめ', 'は', '何', 'ですか'], '“おすすめ” é uma recomendação ou sugestão.', '💡', 'food', 'Peça uma sugestão a alguém em um restaurante ou loja.'),
+  lesson('ja41', 'Vocês aceitam cartão?', ['カード', 'は', '使えます', 'か'], '“使えますか” pergunta se algo pode ser usado.', '💳', 'shopping', 'Pergunte sobre formas de pagamento antes de comprar.'),
+  lesson('ja42', 'Por favor, me ajude.', ['助けて', 'ください'], '“ください” deixa o pedido direto e educado.', '🆘', 'emergency', 'Peça ajuda quando precisar de apoio.'),
+  lesson('ja43', 'Quero descansar um pouco.', ['少し', '休みたい', 'です'], '“～たいです” expressa vontade; “少し” significa um pouco.', '🪑', 'wellbeing', 'Diga que precisa fazer uma pausa.'),
+  lesson('ja44', 'Onde fica o ponto de ônibus?', ['バス停', 'は', 'どこ', 'ですか'], '“どこですか” pergunta onde fica um lugar.', '🚌', 'travel', 'Pergunte onde encontrar o ponto de ônibus.'),
+  lesson('ja45', 'Até a semana que vem!', ['また', '来週', '会いましょう'], '“来週” significa “na próxima semana”; “会いましょう” sugere nos vermos.', '👋', 'greetings', 'Despeça-se de alguém que você verá na próxima semana.')
 );
 
 PHRASES.ru.push(
@@ -218,7 +278,22 @@ PHRASES.ru.push(
   lesson('ru27', 'Preciso de um médico.', ['Мне', 'нужен', 'врач.'], '“Мне нужен” expressa que algo é necessário para você.', '🩺', 'emergency', 'Use para pedir atendimento médico.'),
   lesson('ru28', 'Não estou me sentindo bem.', ['Я', 'плохо', 'себя', 'чувствую.'], '“Плохо себя чувствую” significa que está se sentindo mal.', '🌡️', 'wellbeing', 'Explique que está passando mal ou indisposto.'),
   lesson('ru29', 'Onde fica o banheiro?', ['Где', 'находится', 'туалет?'], '“Где находится…?” também serve para perguntar onde fica um lugar.', '🚻', 'daily', 'Pergunte onde encontrar o banheiro em um local público.'),
-  lesson('ru30', 'Que horas são?', ['Который', 'час?'], '“Который час?” é a pergunta comum para saber as horas.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.')
+  lesson('ru30', 'Que horas são?', ['Который', 'час?'], '“Который час?” é a pergunta comum para saber as horas.', '🕒', 'daily', 'Pergunte as horas durante uma conversa ou passeio.'),
+  lesson('ru31', 'Estou procurando este endereço.', ['Я', 'ищу', 'этот', 'адрес.'], '“Я ищу…” significa “estou procurando…”.', '📍', 'travel', 'Mostre um endereço a alguém e explique o que está procurando.'),
+  lesson('ru32', 'Um copo de água, por favor.', ['Дайте,', 'пожалуйста,', 'стакан', 'воды.'], '“Дайте, пожалуйста” é um pedido educado: “me dê, por favor”.', '🥛', 'food', 'Peça água em um café ou restaurante.'),
+  lesson('ru33', 'Dá para ir a pé até a estação?', ['Можно', 'дойти', 'до', 'станции', 'пешком?'], '“Пешком” significa “a pé”.', '🚶', 'travel', 'Confirme se a estação pode ser alcançada caminhando.'),
+  lesson('ru34', 'Posso tirar uma foto aqui?', ['Можно', 'здесь', 'сфотографировать?'], '“Можно…?” pergunta educadamente se algo é permitido.', '📷', 'conversation', 'Peça permissão antes de fotografar em um local.'),
+  lesson('ru35', 'Hoje está muito quente.', ['Сегодня', 'очень', 'жарко.'], '“Жарко” descreve um clima quente.', '☀️', 'daily', 'Comente o clima durante uma conversa.'),
+  lesson('ru36', 'Falo um pouco de português.', ['Я', 'говорю', 'по-португальски.'], '“Говорю по-…” significa “falo em…”.', '🗣️', 'conversation', 'Explique quais idiomas você consegue falar.'),
+  lesson('ru37', 'Vou esperar aqui.', ['Я', 'буду', 'ждать', 'здесь.'], '“Буду ждать” significa “vou esperar”.', '⏳', 'daily', 'Avise alguém onde você vai esperar.'),
+  lesson('ru38', 'Quero confirmar a reserva.', ['Я', 'хочу', 'подтвердить', 'бронь.'], '“Я хочу” significa “eu quero”; depois vem o infinitivo.', '🛎️', 'travel', 'Confirme os detalhes de uma reserva em um hotel.'),
+  lesson('ru39', 'O que é isto?', ['Что', 'это', 'такое?'], '“Что это такое?” pergunta o que é algo.', '❓', 'conversation', 'Pergunte sobre um objeto que você não conhece.'),
+  lesson('ru40', 'O que você recomenda?', ['Что', 'вы', 'посоветуете?'], '“Посоветуете” significa “recomenda/sugere” em uma pergunta educada.', '💡', 'food', 'Peça uma sugestão a alguém em um restaurante ou loja.'),
+  lesson('ru41', 'Onde fica o caixa eletrônico mais próximo?', ['Где', 'ближайший', 'банкомат?'], '“Ближайший” significa “mais próximo”; “банкомат” é caixa eletrônico.', '🏧', 'shopping', 'Pergunte onde encontrar um caixa eletrônico.'),
+  lesson('ru42', 'Por favor, chame um médico.', ['Позовите', 'врача,', 'пожалуйста.'], '“Позовите” é um pedido educado para chamar alguém.', '🩺', 'emergency', 'Peça ajuda para chamar um médico.'),
+  lesson('ru43', 'Preciso descansar um pouco.', ['Мне', 'нужно', 'немного', 'отдохнуть.'], '“Мне нужно” expressa necessidade; “отдохнуть” é descansar.', '🪑', 'wellbeing', 'Diga que precisa fazer uma pausa.'),
+  lesson('ru44', 'Onde fica o ponto de ônibus mais próximo?', ['Где', 'ближайшая', 'автобусная', 'остановка?'], '“Ближайшая” significa “mais próxima”.', '🚌', 'travel', 'Pergunte onde encontrar o ponto de ônibus mais próximo.'),
+  lesson('ru45', 'Até a semana que vem!', ['До', 'встречи', 'на', 'следующей', 'неделе!'], '“До встречи” significa “até nos vermos”.', '👋', 'greetings', 'Despeça-se de alguém que você verá na próxima semana.')
 );
 
 const READINGS = {
@@ -231,7 +306,12 @@ const READINGS = {
     ja18: 'Bejitarian-muke no menyū wa arimasu ka', ja19: 'Kādo de haraemasu ka', ja20: 'Kore wa ikura desu ka',
     ja21: 'Mite iru dake desu, arigatō', ja22: 'Mō sukoshi yukkuri hanashite kudasai', ja23: 'Mō ichido itte kudasai',
     ja24: 'Kono kotoba ga wakarimasen', ja25: 'Jūji ni kaigi ga arimasu', ja26: 'Kono kadai o owaraseru hitsuyō ga arimasu',
-    ja27: 'Isha ga hitsuyō desu', ja28: 'Kibun ga yoku arimasen', ja29: 'Toire wa doko desu ka', ja30: 'Ima nanji desu ka'
+    ja27: 'Isha ga hitsuyō desu', ja28: 'Kibun ga yoku arimasen', ja29: 'Toire wa doko desu ka', ja30: 'Ima nanji desu ka',
+    ja31: 'Kono jūsho o sagashite imasu', ja32: 'Mizu o ippai kudasai', ja33: 'Eki made aruite ikemasu ka',
+    ja34: 'Koko de shashin o totte mo ii desu ka', ja35: 'Kyō wa totemo atsui desu', ja36: 'Porutogarugo o sukoshi hanashimasu',
+    ja37: 'Koko de matte imasu', ja38: 'Yoyaku o kakunin shitai desu', ja39: 'Kore wa nan desu ka', ja40: 'Osusume wa nan desu ka',
+    ja41: 'Kādo wa tsukaemasu ka', ja42: 'Tasukete kudasai', ja43: 'Sukoshi yasumitai desu', ja44: 'Basutei wa doko desu ka',
+    ja45: 'Mata raishū aimashō'
   },
   ru: {
     ru1: 'Mne nrávitsya kófe', ru2: 'Dóbroye útro', ru3: 'Gde nakhóditsya vokzál', ru4: 'Mne nuzhná pómoshch',
@@ -242,7 +322,12 @@ const READINGS = {
     ru18: 'U vas yest vegetariánskiye blyúda', ru19: 'Mózhno oplatít kartoy', ru20: 'Skólko stóit vot éto',
     ru21: 'Ya prósto smotrú, spasíbo', ru22: 'Ne moglí by vy govorít pomédlenneye', ru23: 'Povtoríte, pozhalúysta',
     ru24: 'Ya ne ponimáyu éto slóvo', ru25: 'U menyá vstrécha v désyat', ru26: 'Mne núzhno zakónchit éto zadániye',
-    ru27: 'Mne núzhen vrach', ru28: 'Ya plókho sebya chúvstvuyu', ru29: 'Gde nakhóditsya tualét', ru30: 'Kotóryy chas'
+    ru27: 'Mne núzhen vrach', ru28: 'Ya plókho sebya chúvstvuyu', ru29: 'Gde nakhóditsya tualét', ru30: 'Kotóryy chas',
+    ru31: 'Ya ishchú etot ádres', ru32: 'Dáyte, pozhalúysta, stakán vody', ru33: 'Mózhno doytí do stántsii peshkóm',
+    ru34: 'Mózhno zdes sfotografírovat', ru35: 'Segódnya óchen zhárko', ru36: 'Ya govorýu po-portugálski',
+    ru37: 'Ya búdu zhdat zdes', ru38: 'Ya khochú podtverdit brón', ru39: 'Chto éto takóye', ru40: 'Chto vy posovétuyete',
+    ru41: 'Gde blizháyshiy bankomát', ru42: 'Pozovíte vrachá, pozhalúysta', ru43: 'Mne núzhno nemnógo otdokhnút',
+    ru44: 'Gde blizháyshaya avtobúsnaya ostanóvka', ru45: 'Do vstréchi na sléduyushchey nédéle'
   }
 };
 

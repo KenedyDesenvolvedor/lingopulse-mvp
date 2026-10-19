@@ -55,13 +55,13 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 ## Fluxo e recursos
 
 - Fluxo por expressão: aprender → praticar com ajuda → WordPuzzle → revisar erros → avançar.
-- 30 expressões em cada um dos cinco idiomas (150 no total), com trilha completa ou seleção por tema: saudações, comida, viagens, compras, conversas, estudo, trabalho, saúde e dia a dia.
+- 45 lições em cada um dos cinco idiomas (225 no total), com trilha completa ou seleção por tema: saudações, comida, viagens, compras, conversas, estudo, trabalho, saúde e dia a dia.
 - Ensino, alternativas, desafio e revisão exibem apoio de leitura para japonês e russo: romaji para japonês e transliteração latina aproximada, com acento tônico, para russo.
 - As lições apresentam palavras-chave, contexto de uso e observações simples de vocabulário e gramática.
 - Pronúncia opcional via Web Speech API (`speechSynthesis`) com fallback textual acessível.
 - Prática guiada com alternativas e dicas, sem consumir energia.
 - Após acertar a prática, o WordPuzzle abre automaticamente após 2,5 segundos; o botão permite avançar imediatamente.
-- WordPuzzle com 30 desafios para inglês, espanhol, francês, japonês e russo.
+- WordPuzzle com 45 desafios para inglês, espanhol, francês, japonês e russo.
 - Tema visual completo muda automaticamente com o idioma: Londres em azul-marinho e cruzes britânicas; Madri em terracota, sol e azulejos; Paris em tricolor e tons de avenida; Tóquio em papel, sol vermelho e ondas; Moscou em azul-gelo, neve e tricolor.
 - Seleção por toque/clique e arrastar e soltar; as peças escolhidas podem ser removidas.
 - Feedback explicativo após respostas incorretas e revisão da resposta após cada puzzle.

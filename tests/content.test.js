@@ -7,12 +7,12 @@ const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 const themes = readFileSync(new URL('../css/themes.css', import.meta.url), 'utf8');
 
-test('mantém cinco idiomas e 30 expressões válidas por idioma', () => {
+test('mantém cinco idiomas e 45 lições válidas por idioma', () => {
   assert.deepEqual(Object.keys(LANGUAGES).sort(), ['en', 'es', 'fr', 'ja', 'ru']);
   assert.equal(LANGUAGES.ru.locale, 'ru-RU');
   assert.match(html, /<option value="ru">🇷🇺 Russo<\/option>/);
   for (const [language, phrases] of Object.entries(PHRASES)) {
-    assert.equal(phrases.length, 30, `${language} deve ter 30 expressões`);
+    assert.equal(phrases.length, 45, `${language} deve ter 45 lições`);
     for (const phrase of phrases) {
       assert.ok(phrase.id && phrase.prompt && phrase.answer.length, `${phrase.id} precisa de conteúdo`);
       assert.ok(phrase.hint && phrase.emoji && phrase.topic, `${phrase.id} precisa de dica, tema e marcador visual`);
