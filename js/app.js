@@ -13,7 +13,7 @@ function loadColorMode() {
     const saved = storage?.getItem(COLOR_MODE_STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
   } catch {}
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light';
 }
 let colorMode = loadColorMode();
 document.documentElement.dataset.colorMode = colorMode;
