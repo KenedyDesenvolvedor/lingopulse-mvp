@@ -341,3 +341,46 @@ footer { color: var(--muted); }
 .coin-pack button { color: var(--text); background: color-mix(in srgb, var(--purple) 18%, var(--panel)); border-color: var(--line); }
 .coin-pack button:hover, .coin-pack button[aria-pressed="true"] { color: var(--text); background: color-mix(in srgb, var(--cyan) 18%, var(--panel)); border-color: var(--cyan); }
 .payment-notice { color: var(--muted); }
+
+/* A cor de cada país continua como base; o assunto acrescenta um acento próprio. */
+:root {
+  --topic-tone: var(--theme-glow-secondary);
+  --topic-accent: color-mix(in srgb, var(--topic-tone) 46%, var(--theme-glow) 54%);
+  --lesson-accent: color-mix(in srgb, var(--topic-accent) 42%, var(--purple) 58%);
+}
+:root[data-topic-theme="greetings"] { --topic-tone: #d9758d; }
+:root[data-topic-theme="food"] { --topic-tone: #d68a36; }
+:root[data-topic-theme="travel"] { --topic-tone: #378fae; }
+:root[data-topic-theme="shopping"] { --topic-tone: #8a62c5; }
+:root[data-topic-theme="conversation"] { --topic-tone: #4991c3; }
+:root[data-topic-theme="study"] { --topic-tone: #586fbd; }
+:root[data-topic-theme="work"] { --topic-tone: #71818f; }
+:root[data-topic-theme="emergency"] { --topic-tone: #ce4d46; }
+:root[data-topic-theme="wellbeing"] { --topic-tone: #4e9d6e; }
+:root[data-topic-theme="daily"] { --topic-tone: #c4a34c; }
+:root[data-color-mode="dark"] {
+  --lesson-accent: color-mix(in srgb, var(--topic-accent) 54%, #f3f5fa);
+}
+
+.stage-kicker, .prompt-label { color: var(--lesson-accent); }
+.progress-track span {
+  background: linear-gradient(90deg, var(--purple), var(--topic-accent));
+}
+.teaching-hero, .prompt-panel {
+  border-color: color-mix(in srgb, var(--topic-accent) 50%, var(--line));
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--theme-glow) 10%, var(--panel)),
+    color-mix(in srgb, var(--topic-tone) 10%, var(--panel))
+  );
+}
+.prompt-icon {
+  background: color-mix(in srgb, var(--topic-accent) 20%, var(--panel2));
+}
+.primary-button {
+  background: linear-gradient(
+    105deg,
+    var(--purple),
+    color-mix(in srgb, var(--topic-tone) 48%, var(--pink))
+  );
+}

@@ -183,6 +183,7 @@ function applyLanguageTheme() {
   const language = LANGUAGES[state.language] ? state.language : 'en';
   const theme = COUNTRY_THEMES[language];
   document.documentElement.dataset.languageTheme = language;
+  document.documentElement.dataset.topicTheme = selectedTopic;
   $('country-name').textContent = theme.country;
   $('country-caption').textContent = theme.caption;
   $('country-motif').textContent = theme.motif;
@@ -850,6 +851,7 @@ $('language-select').value = LANGUAGES[state.language] ? state.language : 'en';
 $('topic-select').value = selectedTopic;
 $('topic-select').addEventListener('change', event => {
   selectedTopic = TOPICS[event.target.value] ? event.target.value : 'all';
+  document.documentElement.dataset.topicTheme = selectedTopic;
   phraseIndex = 0;
   startLesson(true);
 });

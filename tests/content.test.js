@@ -7,14 +7,14 @@ const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 const themes = readFileSync(new URL('../css/themes.css', import.meta.url), 'utf8');
 
-test('mantém dez idiomas com 150 lições e exatamente 15 por tema', () => {
+test('mantém dez idiomas com 250 lições e exatamente 25 por tema', () => {
   assert.deepEqual(Object.keys(LANGUAGES).sort(), ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'ru', 'zh']);
   assert.equal(LANGUAGES.ru.locale, 'ru-RU');
   for (const language of Object.keys(LANGUAGES)) assert.match(html, new RegExp(`<option value="${language}">`));
   for (const [language, phrases] of Object.entries(PHRASES)) {
-    assert.equal(phrases.length, 150, `${language} deve ter 150 lições`);
+    assert.equal(phrases.length, 250, `${language} deve ter 250 lições`);
     for (const topic of Object.keys(TOPICS).filter(topic => topic !== 'all')) {
-      assert.equal(phrases.filter(phrase => phrase.topic === topic).length, 15, `${language} deve ter 15 lições em ${topic}`);
+      assert.equal(phrases.filter(phrase => phrase.topic === topic).length, 25, `${language} deve ter 25 lições em ${topic}`);
     }
     for (const phrase of phrases) {
       assert.ok(phrase.id && phrase.prompt && phrase.answer.length, `${phrase.id} precisa de conteúdo`);

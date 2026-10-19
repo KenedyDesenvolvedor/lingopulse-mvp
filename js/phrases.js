@@ -1,4 +1,6 @@
 import { EXTRA_LANGUAGES, EXTRA_ANSWERS, EXTRA_READINGS, romanizeKorean } from './additional-languages.js';
+import { EXPANSION_ROWS } from './expansion-lessons.js';
+import { EXPANSION_ROWS_MORE } from './expansion-lessons-more.js';
 
 export const LANGUAGES = {
   en: { label: 'Inglês', locale: 'en-US', flag: '🇬🇧' },
@@ -513,4 +515,48 @@ for (const [language, topics] of Object.entries(EXTRA_ANSWERS)) {
     if (language === 'ar') phrase.reading = EXTRA_READINGS.ar[source.topic][topicIndex][0];
     return phrase;
   });
+}
+
+const EXTRA_LESSONS = [...EXPANSION_ROWS, ...EXPANSION_ROWS_MORE];
+const SUPPORTED_ANSWER_LANGUAGES = ['en', 'es', 'fr', 'ja', 'ru', 'de', 'it', 'zh', 'ko', 'ar'];
+if (EXTRA_LESSONS.length !== 100) throw new Error(`Esperadas 100 frases extras, encontradas ${EXTRA_LESSONS.length}.`);
+for (const topic of Object.keys(TOPICS).filter(topic => topic !== 'all')) {
+  if (EXTRA_LESSONS.filter(phrase => phrase.topic === topic).length !== 10) {
+    throw new Error(`O tema ${topic} precisa de exatamente 10 frases extras.`);
+  }
+}
+
+function tokenizeChinese(text) {
+  if (typeof Intl.Segmenter === 'function') {
+    return [...new Intl.Segmenter('zh-CN', { granularity: 'word' }).segment(text)]
+      .map(part => part.segment).filter(part => part.trim());
+  }
+  return [...text].filter(part => !/\s/u.test(part));
+}
+
+for (const row of EXTRA_LESSONS) {
+  const guidance = TOPIC_GUIDANCE[row.topic];
+  for (const language of SUPPORTED_ANSWER_LANGUAGES) {
+    const rawAnswer = row[language];
+    const answer = language === 'ja'
+      ? rawAnswer.split('~')
+      : language === 'zh'
+        ? tokenizeChinese(rawAnswer)
+        : rawAnswer.split(' ');
+    const phrase = lesson(
+      `${language}${PHRASES[language].length + 1}`,
+      row.prompt,
+      answer,
+      guidance.hint,
+      guidance.emoji,
+      row.topic,
+      guidance.context
+    );
+    if (language === 'ja') phrase.reading = row.jaReading;
+    if (language === 'ru') phrase.reading = row.ruReading;
+    if (language === 'zh') phrase.reading = row.zhReading;
+    if (language === 'ko') phrase.reading = romanizeKorean(answer.join(' '));
+    if (language === 'ar') phrase.reading = row.arReading;
+    PHRASES[language].push(phrase);
+  }
 }
