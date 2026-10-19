@@ -55,14 +55,14 @@ Os testes cobrem validação de resposta, conteúdo dos cinco idiomas, etapas pe
 ## Fluxo e recursos
 
 - Fluxo por expressão: aprender → praticar com ajuda → WordPuzzle → revisar erros → avançar.
-- 15 lições em cada um dos dez temas para cada idioma (150 por idioma; 1.500 no total), em inglês, espanhol, francês, japonês, russo, alemão, italiano, mandarim, coreano e árabe.
+- 25 lições em cada um dos dez temas para cada idioma (250 por idioma; 2.500 no total), em inglês, espanhol, francês, japonês, russo, alemão, italiano, mandarim, coreano e árabe.
 - Ensino, alternativas, desafio e revisão exibem apoio de leitura para japonês (romaji), russo (transliteração), mandarim (pinyin), coreano (romanização) e árabe (transliteração aproximada).
 - As lições apresentam palavras-chave, contexto de uso e observações simples de vocabulário e gramática.
 - Pronúncia opcional via Web Speech API (`speechSynthesis`) com fallback textual acessível.
 - Prática guiada com alternativas e dicas, sem consumir energia.
 - Após acertar a prática, o WordPuzzle abre automaticamente após 2,5 segundos; o botão permite avançar imediatamente.
-- WordPuzzle com 150 desafios em cada um dos dez idiomas disponíveis.
-- Tema visual completo muda automaticamente com o idioma: Londres em azul-marinho e cruzes britânicas; Madri em terracota, sol e azulejos; Paris em tricolor e tons de avenida; Tóquio em papel, sol vermelho e ondas; Moscou em azul-gelo, neve e tricolor.
+- WordPuzzle com 250 desafios em cada um dos dez idiomas disponíveis.
+- Tema visual combina país e assunto praticado, com identidade cultural em cada idioma e acentos por contexto. O usuário escolhe manualmente o modo diurno ou noturno, e a escolha fica salva no dispositivo.
 - Seleção por toque/clique e arrastar e soltar; as peças escolhidas podem ser removidas.
 - Feedback explicativo após respostas incorretas e revisão da resposta após cada puzzle.
 - XP avança níveis a cada 100 pontos; cada expressão concluída pela primeira vez rende 10 XP e 5 LingoCoins, e cada novo nível concede 15 moedas bônus.
