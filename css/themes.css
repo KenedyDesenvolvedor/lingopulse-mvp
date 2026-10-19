@@ -294,32 +294,38 @@ footer { color: var(--muted); }
 /* Alternância global entre os modos diurno e noturno. */
 :root[data-color-mode="light"] {
   color-scheme: light;
-  --bg: #f0f3f8;
-  --panel: #ffffff;
-  --panel2: #e8edf5;
-  --line: #c8d1df;
-  --text: #202a3b;
-  --muted: #526078;
+}
+
+:root[data-language-theme="en"][data-color-mode="light"] {
+  --bg: #eaf0f6;
+  --panel: #fffdf8;
+  --panel2: #e6edf5;
+  --line: #bfccda;
+  --text: #1c2d43;
+  --muted: #51647b;
   --reading-color: #344966;
-  --script-color: #202a3b;
-  --theme-shadow: #39465c;
-  --page-pattern: radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--purple) 10%, transparent), transparent 52%), #f0f3f8;
-  --banner-background: linear-gradient(115deg, color-mix(in srgb, var(--purple) 15%, var(--panel)), color-mix(in srgb, var(--cyan) 12%, var(--panel)) 58%, color-mix(in srgb, var(--pink) 12%, var(--panel)));
+  --script-color: #1c2d43;
+  --theme-shadow: #24456b;
+  --page-pattern: radial-gradient(ellipse at 50% -10%, #345a8022, transparent 52%), #eaf0f6;
+  --banner-background: linear-gradient(110deg, #e4edf7, #fffdf8 58%, #f3e4e5);
 }
 
 :root[data-color-mode="dark"] {
   color-scheme: dark;
-  --bg: #101522;
-  --panel: #191f2e;
-  --panel2: #232b3d;
-  --line: #3d4960;
+  --bg: color-mix(in srgb, var(--theme-glow) 18%, #101522);
+  --panel: color-mix(in srgb, var(--theme-glow) 15%, #191f2e);
+  --panel2: color-mix(in srgb, var(--theme-glow) 24%, #232b3d);
+  --line: color-mix(in srgb, var(--theme-glow) 35%, #3d4960);
   --text: #f3f5fa;
-  --muted: #b2bdd0;
-  --reading-color: #d1d9e8;
+  --muted: #bac5d7;
+  --reading-color: #dbe5f5;
   --script-color: #f3f5fa;
   --theme-shadow: #080b12;
-  --page-pattern: radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--purple) 22%, transparent), transparent 52%), #101522;
-  --banner-background: linear-gradient(115deg, color-mix(in srgb, var(--purple) 30%, var(--panel)), color-mix(in srgb, var(--cyan) 17%, var(--panel)) 58%, color-mix(in srgb, var(--pink) 22%, var(--panel)));
+  --good: #75d5ac;
+  --bad: #ff8585;
+  --page-pattern: radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--theme-glow) 36%, transparent), transparent 52%), var(--bg);
+  --banner-background: linear-gradient(115deg, color-mix(in srgb, var(--theme-glow) 38%, var(--panel)), color-mix(in srgb, var(--panel2) 82%, var(--purple)) 58%, color-mix(in srgb, var(--theme-glow-secondary) 24%, var(--panel)));
+  --button-shadow: color-mix(in srgb, var(--theme-glow) 54%, #101522);
 }
 
 .xp-track, .level-dialog-track { background: color-mix(in srgb, var(--line) 72%, var(--panel)); }
