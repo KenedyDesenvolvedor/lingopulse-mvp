@@ -69,6 +69,40 @@ Object.assign(WORD_MEANINGS.ru, {
   'говорить': 'falar', 'помедленнее': 'mais devagar', 'Повторите': 'repita', 'понимаю': 'entendo', 'слово': 'palavra',
   'встреча': 'reunião', 'десять': 'dez', 'задание': 'tarefa', 'врач': 'médico(a)', 'чувствую': 'sinto', 'туалет': 'banheiro'
 });
+Object.assign(WORD_MEANINGS.en, {
+  address: 'endereço', glass: 'copo', water: 'água', walk: 'ir a pé', photo: 'foto', hot: 'quente', today: 'hoje',
+  speak: 'falar', little: 'um pouco', wait: 'esperar', here: 'aqui', confirm: 'confirmar', reservation: 'reserva',
+  mean: 'significar', recommend: 'recomendar', accept: 'aceitar', cards: 'cartões', place: 'lugar', rest: 'descansar',
+  write: 'escrever', nearby: 'perto', next: 'próxima(o)', week: 'semana'
+});
+Object.assign(WORD_MEANINGS.es, {
+  buscando: 'procurando', dirección: 'endereço', vaso: 'copo', agua: 'água', pie: 'pé', hacer: 'fazer', foto: 'foto',
+  Hoy: 'hoje', calor: 'calor', Hablo: 'falo', poco: 'pouco', esperar: 'esperar', aquí: 'aqui', confirmar: 'confirmar',
+  recomienda: 'recomenda', Aceptan: 'aceitam', descansar: 'descansar', Escriba: 'escreva', parada: 'ponto de ônibus',
+  autobús: 'ônibus', cerca: 'perto', próxima: 'próxima', semana: 'semana'
+});
+Object.assign(WORD_MEANINGS.fr, {
+  cherche: 'procuro', adresse: 'endereço', verre: 'copo', 'd’eau': 'de água', pied: 'pé', photo: 'foto', chaud: 'quente',
+  'aujourd’hui': 'hoje', parle: 'falo', attendre: 'esperar', ici: 'aqui', réservation: 'reserva', signifie: 'significa',
+  conseillez: 'recomenda', 'Acceptez-vous': 'vocês aceitam', endroit: 'lugar', reposer: 'descansar',
+  'L’arrêt': 'o ponto/parada', bus: 'ônibus', près: 'perto', prochaine: 'próxima', semaine: 'semana'
+});
+Object.assign(WORD_MEANINGS.ja, {
+  '住所': 'endereço', '探して': 'procurando', '水': 'água', '一杯': 'um copo', '歩いて': 'a pé', '写真': 'foto',
+  '撮って': 'tirar (foto)', '今日': 'hoje', '暑い': 'quente', 'ポルトガル語': 'português', '少し': 'um pouco',
+  '話します': 'falo', '待って': 'esperar', '確認': 'confirmação', 'おすすめ': 'recomendação', '使えます': 'pode usar',
+  '助けて': 'ajude', '休みたい': 'quero descansar', 'バス停': 'ponto de ônibus', '来週': 'semana que vem',
+  '会いましょう': 'vamos nos ver'
+});
+Object.assign(WORD_MEANINGS.ru, {
+  'ищу': 'estou procurando', 'этот': 'este', 'адрес': 'endereço', 'Дайте': 'dê/me dê', 'стакан': 'copo',
+  'воды': 'de água', 'дойти': 'chegar a pé', 'пешком': 'a pé', 'здесь': 'aqui', 'сфотографировать': 'fotografar',
+  'Сегодня': 'hoje', 'жарко': 'quente', 'говорю': 'falo', 'хочу': 'quero', 'подтвердить': 'confirmar',
+  'Что': 'o que', 'такое': 'é/isso', 'посоветуете': 'recomenda', 'ближайший': 'mais próximo',
+  'банкомат': 'caixa eletrônico', 'Позовите': 'chame', 'врача': 'médico', 'немного': 'um pouco',
+  'отдохнуть': 'descansar', 'ближайшая': 'mais próxima', 'автобусная': 'de ônibus', 'остановка': 'parada',
+  'встречи': 'encontro', 'следующей': 'próxima', 'неделе': 'semana'
+});
 
 const LEVEL_TITLES = ['Aprendiz', 'Explorador', 'Viajante', 'Poliglota', 'Mestre'];
 
