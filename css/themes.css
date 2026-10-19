@@ -290,3 +290,48 @@ footer { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   body { transition: none; }
 }
+
+/* Alternância global entre os modos diurno e noturno. */
+:root[data-color-mode="light"] {
+  color-scheme: light;
+  --bg: #f0f3f8;
+  --panel: #ffffff;
+  --panel2: #e8edf5;
+  --line: #c8d1df;
+  --text: #202a3b;
+  --muted: #526078;
+  --reading-color: #344966;
+  --script-color: #202a3b;
+  --theme-shadow: #39465c;
+  --page-pattern: radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--purple) 10%, transparent), transparent 52%), #f0f3f8;
+  --banner-background: linear-gradient(115deg, color-mix(in srgb, var(--purple) 15%, var(--panel)), color-mix(in srgb, var(--cyan) 12%, var(--panel)) 58%, color-mix(in srgb, var(--pink) 12%, var(--panel)));
+}
+
+:root[data-color-mode="dark"] {
+  color-scheme: dark;
+  --bg: #101522;
+  --panel: #191f2e;
+  --panel2: #232b3d;
+  --line: #3d4960;
+  --text: #f3f5fa;
+  --muted: #b2bdd0;
+  --reading-color: #d1d9e8;
+  --script-color: #f3f5fa;
+  --theme-shadow: #080b12;
+  --page-pattern: radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--purple) 22%, transparent), transparent 52%), #101522;
+  --banner-background: linear-gradient(115deg, color-mix(in srgb, var(--purple) 30%, var(--panel)), color-mix(in srgb, var(--cyan) 17%, var(--panel)) 58%, color-mix(in srgb, var(--pink) 22%, var(--panel)));
+}
+
+.xp-track, .level-dialog-track { background: color-mix(in srgb, var(--line) 72%, var(--panel)); }
+.resource-dialog { color: var(--text); background: linear-gradient(160deg, var(--panel2), var(--panel)); border-color: var(--line); }
+.dialog-close { color: var(--text); background: var(--panel2); border-color: var(--line); }
+.economy-note, .shop-balance { color: var(--text); background: var(--panel2); border-color: var(--line); }
+.economy-note strong, .shop-balance, .shop-item strong { color: var(--cyan); }
+.shop-item { color: var(--text); background: var(--panel2); border-color: var(--line); }
+.shop-item p, .coin-pack-heading p, .coin-pack-name, .coin-pack-price, .coin-pack > strong small { color: var(--muted); }
+.coin-pack { background: var(--panel2); border-color: var(--line); }
+.coin-pack.featured { background: linear-gradient(150deg, color-mix(in srgb, var(--purple) 25%, var(--panel2)), var(--panel)); border-color: color-mix(in srgb, var(--purple) 55%, var(--line)); }
+.coin-pack > strong { color: var(--cyan); }
+.coin-pack button { color: var(--text); background: color-mix(in srgb, var(--purple) 18%, var(--panel)); border-color: var(--line); }
+.coin-pack button:hover, .coin-pack button[aria-pressed="true"] { color: var(--text); background: color-mix(in srgb, var(--cyan) 18%, var(--panel)); border-color: var(--cyan); }
+.payment-notice { color: var(--muted); }

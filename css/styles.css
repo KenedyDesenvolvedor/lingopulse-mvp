@@ -11,7 +11,7 @@
 .life-options{display:grid;gap:10px}.ad-life-item .shop-item-icon{background:#68e0d01a;color:#68e0d0}
 
 /* Trilhas por tema e revisão por lembrança ativa */
-.learning-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:14px 24px;background:#11172b;border-top:1px solid #ffffff0b;border-bottom:1px solid #ffffff0b}
+.learning-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:14px 24px;background:#11172b;border-top:1px solid #ffffff0b;border-bottom:1px solid #ffffff0b}
 .learning-control{display:grid;gap:6px;color:var(--muted);font-size:.76rem;font-weight:700}
 .learning-controls{background:var(--panel2);border-color:var(--line)}
 .learning-control select{width:100%;max-width:none;color:var(--text);color-scheme:inherit}

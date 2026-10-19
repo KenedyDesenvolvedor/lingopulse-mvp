@@ -7,6 +7,16 @@ import { acknowledgeLifeGrant, createCoinCheckout, getPaymentConfig, getPaymentS
 const $ = id => document.getElementById(id);
 const rewardedAds = createGoogleRewardedAds(window.LingoPulseAdsConfig);
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
+const COLOR_MODE_STORAGE_KEY = 'lingopulse-color-mode';
+function loadColorMode() {
+  try {
+    const saved = storage?.getItem(COLOR_MODE_STORAGE_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch {}
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+let colorMode = loadColorMode();
+document.documentElement.dataset.colorMode = colorMode;
 let state = loadState(storage);
 let phraseIndex = Math.max(0, Math.min(Number(state.currentLesson) || 0, (PHRASES[state.language] || PHRASES.en).length - 1));
 let selected = [];
@@ -178,7 +188,16 @@ function applyLanguageTheme() {
   $('country-motif').textContent = theme.motif;
   $('country-flag').textContent = LANGUAGES[language].flag;
   $('country-banner').setAttribute('aria-label', `Tema cultural: ${theme.country}. ${theme.caption}`);
-  document.querySelector('meta[name="theme-color"]').content = theme.color;
+  syncThemeColor();
+}
+function syncThemeColor() {
+  const theme = COUNTRY_THEMES[state.language] || COUNTRY_THEMES.en;
+  document.querySelector('meta[name="theme-color"]').content = colorMode === 'dark' ? '#101820' : theme.color;
+}
+function applyColorMode() {
+  document.documentElement.dataset.colorMode = colorMode;
+  $('color-mode-select').value = colorMode;
+  syncThemeColor();
 }
 function persist() {
   const catalog = PHRASES[state.language] || PHRASES.en;
@@ -811,6 +830,11 @@ document.querySelectorAll('[data-coin-pack]').forEach(button => button.addEventL
 document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
 $('back-to-learning-button').addEventListener('click', () => { renderLearn(); setStage('learn'); });
 $('language-select').addEventListener('change', event => { state.language = LANGUAGES[event.target.value] ? event.target.value : 'en'; applyLanguageTheme(); phraseIndex = 0; persist(); startLesson(true); });
+$('color-mode-select').addEventListener('change', event => {
+  colorMode = event.target.value === 'dark' ? 'dark' : 'light';
+  applyColorMode();
+  try { storage?.setItem(COLOR_MODE_STORAGE_KEY, colorMode); } catch {}
+});
 $('restart-button').addEventListener('click', () => { $('result-dialog').close(); startLesson(true); });
 $('reset-button').addEventListener('click', () => { if (window.confirm('Quer apagar seu XP, moedas, energia e histórico deste navegador?')) { state = createInitialState(); persist(); startLesson(true); } });
 $('answer-slots').addEventListener('dragover', event => event.preventDefault());
@@ -829,6 +853,7 @@ $('topic-select').addEventListener('change', event => {
   phraseIndex = 0;
   startLesson(true);
 });
+applyColorMode();
 applyLanguageTheme();
 renderStats(); renderReviewCount(); renderLearn(); setStage('learn');
 initializePayments();
