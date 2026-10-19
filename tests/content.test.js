@@ -1,22 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { LANGUAGES, PHRASES } from '../js/phrases.js';
+import { LANGUAGES, PHRASES, TOPICS } from '../js/phrases.js';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 const themes = readFileSync(new URL('../css/themes.css', import.meta.url), 'utf8');
 
-test('mantém cinco idiomas e 45 lições válidas por idioma', () => {
-  assert.deepEqual(Object.keys(LANGUAGES).sort(), ['en', 'es', 'fr', 'ja', 'ru']);
+test('mantém dez idiomas com 150 lições e exatamente 15 por tema', () => {
+  assert.deepEqual(Object.keys(LANGUAGES).sort(), ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'ru', 'zh']);
   assert.equal(LANGUAGES.ru.locale, 'ru-RU');
-  assert.match(html, /<option value="ru">🇷🇺 Russo<\/option>/);
+  for (const language of Object.keys(LANGUAGES)) assert.match(html, new RegExp(`<option value="${language}">`));
   for (const [language, phrases] of Object.entries(PHRASES)) {
-    assert.equal(phrases.length, 45, `${language} deve ter 45 lições`);
+    assert.equal(phrases.length, 150, `${language} deve ter 150 lições`);
+    for (const topic of Object.keys(TOPICS).filter(topic => topic !== 'all')) {
+      assert.equal(phrases.filter(phrase => phrase.topic === topic).length, 15, `${language} deve ter 15 lições em ${topic}`);
+    }
     for (const phrase of phrases) {
       assert.ok(phrase.id && phrase.prompt && phrase.answer.length, `${phrase.id} precisa de conteúdo`);
       assert.ok(phrase.hint && phrase.emoji && phrase.topic, `${phrase.id} precisa de dica, tema e marcador visual`);
-      if (language === 'ja' || language === 'ru') assert.ok(phrase.reading, `${phrase.id} precisa de apoio de leitura`);
+      if (['ja', 'ru', 'zh', 'ko', 'ar'].includes(language)) assert.ok(phrase.reading, `${phrase.id} precisa de apoio de leitura`);
     }
   }
 });
@@ -57,7 +60,7 @@ test('tema cultural atualiza nome, cidade, motivo e bandeira para cada idioma', 
   assert.match(html, /id="country-motif"/);
   assert.match(html, /id="country-flag"/);
   assert.match(app, /const COUNTRY_THEMES = \{/);
-  for (const [language, country] of Object.entries({ en: 'Reino Unido', es: 'Espanha', fr: 'França', ja: 'Japão', ru: 'Rússia' })) {
+  for (const [language, country] of Object.entries({ en: 'Reino Unido', es: 'Espanha', fr: 'França', ja: 'Japão', ru: 'Rússia', de: 'Alemanha', it: 'Itália', zh: 'China', ko: 'Coreia do Sul', ar: 'Arábia Saudita' })) {
     assert.match(app, new RegExp(`${language}: \\{ country: '${country}'`));
   }
   assert.match(themes, /--art-background:/);

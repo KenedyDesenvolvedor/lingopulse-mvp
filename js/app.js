@@ -111,7 +111,12 @@ const COUNTRY_THEMES = {
   es: { country: 'Espanha', caption: 'Madri · sol, praças e azulejos', motif: '☀️', color: '#f2e5d1' },
   fr: { country: 'França', caption: 'Paris · arte e grandes avenidas', motif: '🗼', color: '#e7edf4' },
   ja: { country: 'Japão', caption: 'Tóquio · lanternas, flores e ondas', motif: '🌸', color: '#f3e9e2' },
-  ru: { country: 'Rússia', caption: 'Moscou · cúpulas coloridas e inverno', motif: '🏰', color: '#dfe9f3' }
+  ru: { country: 'Rússia', caption: 'Moscou · cúpulas coloridas e inverno', motif: '🏰', color: '#dfe9f3' },
+  de: { country: 'Alemanha', caption: 'Berlim · história, arte e vida urbana', motif: '🏛️', color: '#f3eddf' },
+  it: { country: 'Itália', caption: 'Roma · praças, história e cafés', motif: '🏛️', color: '#edf3eb' },
+  zh: { country: 'China', caption: 'Pequim · lanternas e tradição', motif: '🏮', color: '#f8e8df' },
+  ko: { country: 'Coreia do Sul', caption: 'Seul · tradição e cultura contemporânea', motif: '🌆', color: '#e8eef6' },
+  ar: { country: 'Arábia Saudita', caption: 'Riade · cultura árabe e arquitetura', motif: '🌙', color: '#e6f0e5' }
 };
 
 function currentPhrases() {
@@ -119,17 +124,20 @@ function currentPhrases() {
   return selectedTopic === 'all' ? phrases : phrases.filter(phrase => phrase.topic === selectedTopic);
 }
 function currentPhrase() { return currentPhrases()[phraseIndex]; }
-function targetText(phrase = currentPhrase(), language = state.language) { return phrase.answer.join(language === 'ja' ? '' : ' '); }
-function displayTargetText(phrase, language = state.language) { return phrase.answer.join(' '); }
+function joinAnswerParts(words, language = state.language) { return words.join(language === 'ja' || language === 'zh' ? '' : ' '); }
+function targetText(phrase = currentPhrase(), language = state.language) { return joinAnswerParts(phrase.answer, language); }
+function displayTargetText(phrase, language = state.language) { return joinAnswerParts(phrase.answer, language); }
 function applyScriptFont(element, language = state.language) {
-  const scriptLanguage = language === 'ja' ? 'ja-JP' : language === 'ru' ? 'ru-RU' : LANGUAGES[language]?.locale;
+  const scriptLanguage = LANGUAGES[language]?.locale;
   if (scriptLanguage) element.lang = scriptLanguage;
-  element.classList.toggle('script-text', language === 'ja' || language === 'ru');
+  element.classList.toggle('script-text', ['ja', 'ru', 'zh', 'ko', 'ar'].includes(language));
+  if (language === 'ar') element.dir = 'rtl';
+  else element.removeAttribute('dir');
 }
 function renderTargetPhrase(element, phrase, language = state.language) {
   element.replaceChildren();
   applyScriptFont(element, language);
-  const segmented = language === 'ja' || language === 'ru';
+  const segmented = ['ja', 'ru', 'zh', 'ko', 'ar'].includes(language);
   element.classList.toggle('segmented-phrase', segmented);
   if (!segmented) {
     element.removeAttribute('aria-label');
@@ -140,7 +148,8 @@ function renderTargetPhrase(element, phrase, language = state.language) {
   phrase.answer.forEach(word => {
     const segment = document.createElement('strong');
     segment.className = 'script-word';
-    segment.lang = language === 'ja' ? 'ja-JP' : 'ru-RU';
+    segment.lang = LANGUAGES[language]?.locale || '';
+    if (language === 'ar') segment.dir = 'rtl';
     segment.setAttribute('aria-hidden', 'true');
     segment.textContent = word;
     element.append(segment);
@@ -155,6 +164,9 @@ function readingText(phrase, language = state.language) {
   if (!phrase.reading) return '';
   if (language === 'ja') return `Romaji · ${phrase.reading} ("oo" ou macron, como ō/ū, indica uma vogal longa).`;
   if (language === 'ru') return `Transliteração · ${phrase.reading}. “zh” soa como o j de “jogo”; os acentos indicam a sílaba forte.`;
+  if (language === 'zh') return `Pinyin · ${phrase.reading}. Os sinais sobre as vogais indicam os tons do mandarim.`;
+  if (language === 'ko') return `Romanização · ${phrase.reading}. É uma aproximação em letras latinas; o áudio ajuda a ouvir as mudanças de som.`;
+  if (language === 'ar') return `Leitura aproximada · ${phrase.reading}. “kh” e “ḥ” representam sons guturais do árabe.`;
   return '';
 }
 function applyLanguageTheme() {
@@ -547,11 +559,14 @@ function renderLearn() {
 function renderPractice() {
   const phrase = currentPhrase();
   $('practice-prompt').textContent = phrase.prompt;
-  $('practice-reading-note').textContent = state.language === 'ja'
-    ? 'As opções mostram o romaji junto da escrita japonesa; use o áudio para ouvir o ritmo.'
-    : state.language === 'ru'
-      ? 'As opções mostram a leitura em letras latinas; os acentos ajudam a localizar a sílaba forte.'
-      : 'Escolha uma opção. Aqui você pode aprender com as dicas, sem perder energia.';
+  const readingNotes = {
+    ja: 'As opções mostram o romaji junto da escrita japonesa; use o áudio para ouvir o ritmo.',
+    ru: 'As opções mostram a leitura em letras latinas; os acentos ajudam a localizar a sílaba forte.',
+    zh: 'As opções mostram o pinyin junto dos caracteres; os sinais indicam os tons do mandarim.',
+    ko: 'As opções incluem uma romanização aproximada para acompanhar a leitura do hangul.',
+    ar: 'As opções incluem uma leitura aproximada em letras latinas para apoiar a escrita árabe.'
+  };
+  $('practice-reading-note').textContent = readingNotes[state.language] || 'Escolha uma opção. Aqui você pode aprender com as dicas, sem perder energia.';
   $('practice-feedback').hidden = true;
   $('practice-hint-button').textContent = practiceHintVisible ? 'Ocultar dica' : 'Ver dica';
   $('practice-hint-button').setAttribute('aria-expanded', String(practiceHintVisible));
@@ -602,6 +617,7 @@ function makeBank() {
 }
 function renderAnswer() {
   const slots = $('answer-slots'); slots.replaceChildren();
+  slots.dir = state.language === 'ar' ? 'rtl' : 'ltr';
   if (!selected.length) {
     const placeholder = document.createElement('span'); placeholder.className = 'hint-text'; placeholder.textContent = 'Sua expressão aparecerá aqui…'; slots.append(placeholder);
   }
@@ -616,6 +632,7 @@ function renderAnswer() {
 }
 function renderBank() {
   const root = $('word-bank'); root.replaceChildren();
+  root.dir = state.language === 'ar' ? 'rtl' : 'ltr';
   bank.forEach(item => {
     const button = document.createElement('button'); button.type = 'button'; button.className = `word-tile${item.used ? ' used' : ''}`;
     button.textContent = item.word; applyScriptFont(button); button.disabled = item.used || locked || state.energy <= 0; button.draggable = !item.used && !locked && state.energy > 0;
@@ -677,7 +694,7 @@ function checkAnswer() {
     persist();
     void reconcilePendingLifeGrants();
     const correct = displayTargetText(currentPhrase());
-    showFeedback(`Ainda não. Sua resposta foi “${answerWords.join(' ')}”. A expressão correta é “${correct}”. ${currentPhrase().hint} Você pode corrigir e tentar novamente; cada tentativa incorreta no desafio consome 1 energia.`, false);
+    showFeedback(`Ainda não. Sua resposta foi “${joinAnswerParts(answerWords)}”. A expressão correta é “${correct}”. ${currentPhrase().hint} Você pode corrigir e tentar novamente; cada tentativa incorreta no desafio consome 1 energia.`, false);
     if (state.energy <= 0) {
       $('check-button').textContent = 'Sem energia'; $('check-button').disabled = true;
       $('feedback').textContent += ' Você pode revisar a explicação e continuar aprendendo sem energia; o puzzle ficará bloqueado até a recarga.';
@@ -699,7 +716,7 @@ function showReviewStage() {
   $('review-explanation').textContent = glosses.length
     ? `${phrase.hint} Palavras-chave: ${glosses.join(' · ')}.`
     : phrase.hint;
-  $('review-your-answer').textContent = mistakeRecord?.lastAnswer?.length ? `Última tentativa incorreta: ${mistakeRecord.lastAnswer.join(' ')}` : (lastSelectedAnswer.length ? `Sua resposta: ${lastSelectedAnswer.join(' ')}` : 'Você concluiu a prática guiada.');
+  $('review-your-answer').textContent = mistakeRecord?.lastAnswer?.length ? `Última tentativa incorreta: ${joinAnswerParts(mistakeRecord.lastAnswer)}` : (lastSelectedAnswer.length ? `Sua resposta: ${joinAnswerParts(lastSelectedAnswer)}` : 'Você concluiu a prática guiada.');
   const mistake = state.mistakes[phrase.id];
   $('review-schedule').textContent = mistake ? `Esta expressão foi adicionada à revisão espaçada. Próxima revisão prevista: ${new Date(mistake.dueAt).toLocaleString()}.` : 'Continue praticando. Se uma expressão ficar difícil, ela será adicionada à revisão espaçada.';
   $('next-lesson-button').textContent = phraseIndex + 1 >= currentPhrases().length ? 'Concluir trilha →' : 'Próxima lição →';

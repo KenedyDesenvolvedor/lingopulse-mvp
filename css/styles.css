@@ -38,6 +38,12 @@ footer{flex-wrap:wrap}
   font-family: "Segoe UI", "Noto Sans", Arial, "Liberation Sans", sans-serif;
   letter-spacing: .01em;
 }
+:lang(zh).script-text,
+:lang(zh) .script-word { font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif; }
+:lang(ko).script-text,
+:lang(ko) .script-word { font-family: "Malgun Gothic", "Noto Sans KR", "Apple SD Gothic Neo", "Noto Sans CJK KR", sans-serif; }
+:lang(ar).script-text,
+:lang(ar) .script-word { font-family: "Noto Naskh Arabic", "Noto Sans Arabic", Tahoma, Arial, sans-serif; letter-spacing: 0; }
 .segmented-phrase {
   display: inline-flex;
   flex-wrap: wrap;
@@ -51,6 +57,7 @@ footer{flex-wrap:wrap}
   font-size: 1.08em;
   font-weight: 800;
 }
+.segmented-phrase[dir="rtl"] { direction: rtl; }
 .teaching-hero .target-phrase.segmented-phrase {
   font-size: clamp(1.4rem, 5vw, 1.9rem);
 }
