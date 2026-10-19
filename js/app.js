@@ -173,10 +173,10 @@ function wordMeaning(word, language = state.language) {
 function readingText(phrase, language = state.language) {
   if (!phrase.reading) return '';
   if (language === 'ja') return `Romaji · ${phrase.reading} ("oo" ou macron, como ō/ū, indica uma vogal longa).`;
-  if (language === 'ru') return `Transliteração · ${phrase.reading}. “zh” soa como o j de “jogo”; os acentos indicam a sílaba forte.`;
+  if (language === 'ru') return `Transliteração · ${phrase.reading}. “zh” soa como o j de “jogo”; a tonicidade não é marcada em todas as palavras.`;
   if (language === 'zh') return `Pinyin · ${phrase.reading}. Os sinais sobre as vogais indicam os tons do mandarim.`;
   if (language === 'ko') return `Romanização · ${phrase.reading}. É uma aproximação em letras latinas; o áudio ajuda a ouvir as mudanças de som.`;
-  if (language === 'ar') return `Leitura aproximada · ${phrase.reading}. “kh” e “ḥ” representam sons guturais do árabe.`;
+  if (language === 'ar') return `Leitura aproximada · ${phrase.reading}. Algumas vogais curtas não aparecem na escrita árabe.`;
   return '';
 }
 function applyLanguageTheme() {
@@ -554,7 +554,9 @@ function renderLearn() {
   reading.textContent = readingText(phrase);
   reading.hidden = !reading.textContent;
   $('learn-emoji').textContent = phrase.emoji;
-  $('learn-pronunciation').textContent = state.language === 'ja' ? 'Ouça o ritmo da expressão japonesa e repita devagar.' : 'Ouça a pronúncia e repita em voz alta, se quiser.';
+  $('learn-pronunciation').textContent = phrase.kind === 'vocabulary'
+    ? 'Ouça a palavra e repita em voz alta, se quiser.'
+    : state.language === 'ja' ? 'Ouça o ritmo da expressão japonesa e repita devagar.' : 'Ouça a pronúncia e repita em voz alta, se quiser.';
   const vocab = $('vocabulary-list'); vocab.replaceChildren();
   phrase.answer.forEach(word => {
     const meaningText = wordMeaning(word);
@@ -578,10 +580,13 @@ function renderLearn() {
 }
 function renderPractice() {
   const phrase = currentPhrase();
-  $('practice-prompt').textContent = phrase.prompt;
+  $('practice-title').textContent = phrase.kind === 'vocabulary' ? 'Qual palavra corresponde a isso?' : 'Qual expressão significa isso?';
+  $('practice-prompt').textContent = phrase.kind === 'vocabulary'
+    ? `Como se diz “${phrase.prompt}” em ${LANGUAGES[state.language].label}?`
+    : phrase.prompt;
   const readingNotes = {
     ja: 'As opções mostram o romaji junto da escrita japonesa; use o áudio para ouvir o ritmo.',
-    ru: 'As opções mostram a leitura em letras latinas; os acentos ajudam a localizar a sílaba forte.',
+    ru: 'As opções mostram uma transliteração em letras latinas para apoiar a leitura do cirílico.',
     zh: 'As opções mostram o pinyin junto dos caracteres; os sinais indicam os tons do mandarim.',
     ko: 'As opções incluem uma romanização aproximada para acompanhar a leitura do hangul.',
     ar: 'As opções incluem uma leitura aproximada em letras latinas para apoiar a escrita árabe.'
@@ -593,8 +598,8 @@ function renderPractice() {
   $('to-puzzle-button').disabled = !practicePassed;
   $('to-puzzle-button').textContent = practicePassed ? 'Continuar para o puzzle →' : 'Responda para continuar';
   const catalog = PHRASES[state.language] || PHRASES.en;
-  const sameTopic = catalog.filter(item => item.id !== phrase.id && item.topic === phrase.topic);
-  const otherPhrases = catalog.filter(item => item.id !== phrase.id && item.topic !== phrase.topic);
+  const sameTopic = catalog.filter(item => item.id !== phrase.id && item.topic === phrase.topic && item.kind === phrase.kind);
+  const otherPhrases = catalog.filter(item => item.id !== phrase.id && item.topic !== phrase.topic && item.kind === phrase.kind);
   const distractors = [];
   for (const candidate of [...shuffleWords(sameTopic), ...shuffleWords(otherPhrases)]) {
     if (!distractors.some(item => targetText(item) === targetText(candidate))) distractors.push(candidate);
@@ -665,6 +670,7 @@ function renderBank() {
 function renderPuzzle() {
   const phrase = currentPhrase();
   $('prompt-text').textContent = phrase.prompt;
+  $('prompt-label').textContent = phrase.kind === 'vocabulary' ? 'MONTE A PALAVRA APRENDIDA' : 'MONTE A EXPRESSÃO APRENDIDA';
   $('puzzle-reading').textContent = readingText(phrase);
   $('puzzle-reading').hidden = !$('puzzle-reading').textContent;
   $('hint-text').textContent = phrase.hint;
@@ -724,7 +730,8 @@ function checkAnswer() {
 function showReviewStage() {
   const phrase = currentPhrase();
   const mistakeRecord = state.mistakes[phrase.id];
-  $('review-result').textContent = mistakeRecord ? 'Você encontrou uma dificuldade nesta expressão. Veja a resposta e a explicação; ela voltará para revisão espaçada.' : 'Muito bem! Você montou a expressão corretamente.';
+  const itemName = phrase.kind === 'vocabulary' ? 'palavra' : 'expressão';
+  $('review-result').textContent = mistakeRecord ? `Você encontrou uma dificuldade nesta ${itemName}. Veja a resposta e a explicação; ela voltará para revisão espaçada.` : `Muito bem! Você montou a ${itemName} corretamente.`;
   renderTargetPhrase($('review-correct'), phrase);
   $('review-reading').textContent = readingText(phrase);
   $('review-reading').hidden = !$('review-reading').textContent;
