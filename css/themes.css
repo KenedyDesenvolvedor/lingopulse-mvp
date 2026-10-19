@@ -7,6 +7,8 @@
   --line: #466587;
   --text: #f5f2e9;
   --muted: #bdc9d5;
+  --reading-color: #d8d1ff;
+  --script-color: #f5f2e9;
   --purple: #548fc7;
   --cyan: #ecc56d;
   --pink: #d85d64;
@@ -73,6 +75,8 @@
   --line: #d2aca8;
   --text: #302426;
   --muted: #755e60;
+  --reading-color: #57202c;
+  --script-color: #21181a;
   --purple: #b62f49;
   --cyan: #aa7842;
   --pink: #dc7890;
@@ -95,6 +99,8 @@
   --line: #b1c1d5;
   --text: #1e2c43;
   --muted: #52647b;
+  --reading-color: #1e3654;
+  --script-color: #152844;
   --purple: #315fa1;
   --cyan: #b93b49;
   --pink: #cf3d50;

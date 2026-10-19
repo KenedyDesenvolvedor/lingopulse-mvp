@@ -32,16 +32,22 @@
 
     <section class="game-card" aria-labelledby="lesson-title">
       <div class="lesson-head">
-        <div class="lesson-meta"><span class="level-pill" id="lesson-number">LIÇÃO 01</span><span id="question-counter">APRENDER · 1 DE 10</span></div>
-        <div class="progress-track" role="progressbar" aria-label="Progresso do curso" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="lesson-progress"><span id="progress-fill"></span></div>
+        <div class="lesson-meta"><span class="level-pill" id="lesson-number">LIÇÃO 01</span><span id="question-counter">APRENDER · 1 DE 30</span></div>
+        <div class="progress-track" role="progressbar" aria-label="Progresso da trilha" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0" id="lesson-progress"><span id="progress-fill"></span></div>
         <div class="lesson-title-row"><div><h2 id="lesson-title">Aprenda a expressão</h2><p id="lesson-subtitle">Ouça, entenda e pratique no seu ritmo.</p></div><button id="sound-button" class="icon-button" type="button" aria-label="Ouvir a expressão no idioma estudado" title="Ouvir pronúncia">🔊</button></div>
       </div>
 
-      <div class="language-row">
-        <label for="language-select">Estou aprendendo</label>
-        <select id="language-select">
+      <div class="learning-controls">
+        <label class="learning-control" for="language-select"><span>Estou aprendendo</span>
+          <select id="language-select">
           <option value="en">🇬🇧 Inglês</option><option value="es">🇪🇸 Espanhol</option><option value="fr">🇫🇷 Francês</option><option value="ja">🇯🇵 Japonês</option><option value="ru">🇷🇺 Russo</option>
-        </select>
+          </select>
+        </label>
+        <label class="learning-control" for="topic-select"><span>Quero praticar</span>
+          <select id="topic-select">
+            <option value="all">Trilha completa · 30 lições</option><option value="greetings">Saudações</option><option value="food">Comida e bebida</option><option value="travel">Viagens</option><option value="shopping">Compras</option><option value="conversation">Conversas</option><option value="study">Estudos</option><option value="work">Trabalho</option><option value="emergency">Pedir ajuda</option><option value="wellbeing">Saúde</option><option value="daily">Dia a dia</option>
+          </select>
+        </label>
       </div>
 
       <aside class="country-banner" id="country-banner" aria-live="polite" aria-label="Tema cultural do idioma">
@@ -52,15 +58,15 @@
 
       <section id="learn-stage" class="stage-panel" aria-labelledby="learn-title">
         <div class="stage-kicker">ETAPA 1 · APRENDER</div>
-        <div class="teaching-hero"><div class="prompt-icon" aria-hidden="true" id="learn-emoji">☕</div><div><h2 id="learn-title">Eu gosto de café.</h2><p id="learn-translation" class="target-phrase">I like coffee.</p><p id="learn-pronunciation" class="hint-text">Ouça a pronúncia e repita em voz alta.</p></div></div>
-        <div class="vocabulary-block"><h3>Vamos dividir a expressão</h3><div id="vocabulary-list" class="vocabulary-list"></div></div>
-        <div class="example-block"><h3>Quando usar?</h3><p id="learn-example"></p><p id="learn-tip" class="teaching-tip"></p></div>
+        <div class="teaching-hero"><div class="prompt-icon" aria-hidden="true" id="learn-emoji">☕</div><div><h2 id="learn-title">Eu gosto de café.</h2><p id="learn-translation" class="target-phrase">I like coffee.</p><p id="learn-reading" class="reading-guide" hidden></p><p id="learn-pronunciation" class="hint-text">Ouça a pronúncia e repita em voz alta.</p></div></div>
+        <div id="vocabulary-block" class="vocabulary-block"><h3>Palavras-chave</h3><div id="vocabulary-list" class="vocabulary-list"></div></div>
+        <div class="example-block"><h3>Quando usar?</h3><p id="learn-example"></p><h3 class="learning-note-title">Observe a construção</h3><p id="learn-tip" class="teaching-tip"></p></div>
         <p id="speech-status" class="status-message" role="status" aria-live="polite">Você pode ouvir a expressão quantas vezes quiser.</p>
         <div class="stage-actions"><button id="repeat-speech-button" class="secondary-button" type="button">🔊 Ouvir novamente</button><button id="to-practice-button" class="primary-button" type="button">Praticar com ajuda <span aria-hidden="true">→</span></button></div>
       </section>
 
       <section id="practice-stage" class="stage-panel" aria-labelledby="practice-title" hidden>
-        <div class="stage-kicker">ETAPA 2 · PRATICAR COM AJUDA</div><h2 id="practice-title">Qual expressão significa isso?</h2><p id="practice-prompt" class="practice-prompt"></p><p class="hint-text">Escolha uma opção. Aqui você pode aprender com as dicas, sem perder energia.</p>
+        <div class="stage-kicker">ETAPA 2 · PRATICAR COM AJUDA</div><h2 id="practice-title">Qual expressão significa isso?</h2><p id="practice-prompt" class="practice-prompt"></p><p id="practice-reading-note" class="hint-text">Escolha uma opção. Aqui você pode aprender com as dicas, sem perder energia.</p>
         <div id="practice-options" class="practice-options"></div>
         <div id="practice-feedback" class="feedback" role="status" aria-live="polite" hidden></div>
         <div class="stage-actions"><button id="practice-hint-button" class="secondary-button" type="button">Ver dica</button><button id="to-puzzle-button" class="primary-button" type="button" disabled>Entendi, jogar puzzle <span aria-hidden="true">→</span></button></div>
@@ -68,7 +74,7 @@
 
       <section id="puzzle-stage" class="stage-panel" aria-labelledby="puzzle-title" hidden>
         <div class="stage-kicker">ETAPA 3 · WORDPUZZLE</div>
-        <div class="prompt-panel"><div class="prompt-icon" aria-hidden="true" id="prompt-emoji">💬</div><div class="prompt-copy"><span class="prompt-label">MONTE A EXPRESSÃO APRENDIDA</span><p id="prompt-text">Eu gosto de café.</p><span id="hint-text" class="hint-text">Dica: comece com quem faz a ação.</span></div></div>
+        <div class="prompt-panel"><div class="prompt-icon" aria-hidden="true" id="prompt-emoji">💬</div><div class="prompt-copy"><span class="prompt-label">MONTE A EXPRESSÃO APRENDIDA</span><p id="prompt-text">Eu gosto de café.</p><p id="puzzle-reading" class="reading-guide" hidden></p><span id="hint-text" class="hint-text">Dica: comece com quem faz a ação.</span></div></div>
         <div class="answer-area"><div class="answer-heading"><span>SUA RESPOSTA</span><button type="button" id="clear-button" class="text-button">Limpar</button></div><div id="answer-slots" class="answer-slots" aria-label="Palavras escolhidas; toque em uma palavra para removê-la" aria-live="polite"></div><p id="interaction-help" class="interaction-help">Toque nas palavras na ordem certa. Arrastar também funciona em dispositivos compatíveis.</p></div>
         <div class="word-bank-wrap"><div class="answer-heading"><span>PEÇAS DISPONÍVEIS</span><span class="tiny-label">TOQUE OU ARRASTE</span></div><div id="word-bank" class="word-bank" aria-label="Palavras disponíveis"></div></div>
         <div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div>
@@ -78,7 +84,7 @@
 
       <section id="review-stage" class="stage-panel" aria-labelledby="review-title" hidden>
         <div class="stage-kicker">ETAPA 4 · REVISAR E FIXAR</div><h2 id="review-title">Vamos revisar o que você aprendeu</h2><p id="review-result" class="review-result"></p>
-        <div class="review-answer"><span class="prompt-label">RESPOSTA CORRETA</span><p id="review-correct" class="target-phrase"></p><p id="review-meaning"></p></div>
+        <div class="review-answer"><span class="prompt-label">RESPOSTA CORRETA</span><p id="review-correct" class="target-phrase"></p><p id="review-reading" class="reading-guide" hidden></p><p id="review-meaning"></p></div>
         <div class="example-block"><h3>Por que essa é a resposta?</h3><p id="review-explanation"></p><p id="review-your-answer" class="hint-text"></p></div>
         <p id="review-schedule" class="status-message"></p>
         <div class="stage-actions"><button id="review-speak-button" class="secondary-button" type="button">🔊 Ouvir resposta</button><button id="next-lesson-button" class="primary-button" type="button">Próxima lição <span aria-hidden="true">→</span></button></div><p id="review-speech-status" class="status-message" role="status" aria-live="polite"></p>
@@ -93,7 +99,7 @@
     </section>
 
     <section class="bottom-row" aria-label="Como funciona o aprendizado"><div class="mini-card"><span aria-hidden="true">📖</span><div><strong>Aprenda com contexto</strong><p>Significado, vocabulário, exemplos e pronúncia antes do desafio.</p></div></div><div class="mini-card"><span aria-hidden="true">🧠</span><div><strong>Revise no momento certo</strong><p>Se errar, a expressão volta para revisão espaçada.</p></div></div></section>
-    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.4</span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
+    <footer><span>LINGOPULSE <span class="footer-dot">•</span> MVP 0.3.4 <span class="footer-author">• Autor: KenyDev</span></span><button id="reset-button" type="button" class="text-button">Zerar progresso local</button></footer>
   </main>
   <dialog id="result-dialog" class="result-dialog" aria-labelledby="result-title"><div class="result-content"><div class="result-icon" aria-hidden="true">🏆</div><p class="eyebrow">TRILHA CONCLUÍDA</p><h2 id="result-title">Você mandou bem!</h2><p id="result-summary">Você concluiu a trilha.</p><div class="result-rewards"><span>⚡ <strong id="result-xp">0 XP</strong></span><span>🟡 <strong id="result-coins">0 moedas</strong></span></div><button id="restart-button" class="primary-button" type="button">Recomeçar trilha</button></div></dialog>
   <dialog id="level-dialog" class="resource-dialog" aria-labelledby="level-dialog-title">
