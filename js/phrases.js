@@ -1,3 +1,5 @@
+import { EXTRA_LANGUAGES, EXTRA_ANSWERS, EXTRA_READINGS, romanizeKorean } from './additional-languages.js';
+
 export const LANGUAGES = {
   en: { label: 'Inglês', locale: 'en-US', flag: '🇬🇧' },
   es: { label: 'Espanhol', locale: 'es-ES', flag: '🇪🇸' },
@@ -25,7 +27,7 @@ function lesson(id, prompt, answer, hint, emoji, topic, context) {
 }
 
 // As peças são separadas por espaços para manter o puzzle simples no MVP.
-// No japonês, usamos segmentos curtos que podem ser ordenados visualmente.
+// Para escritas sem separação por espaços, usamos segmentos curtos no puzzle.
 export const PHRASES = {
   en: [
     { id: 'en1', prompt: 'Eu gosto de café.', answer: ['I', 'like', 'coffee'], hint: 'Comece com quem faz a ação.', emoji: '☕' },
@@ -496,4 +498,19 @@ for (const [topic, rows] of Object.entries(TOPIC_LESSONS)) {
       PHRASES[language].push(phrase);
     }
   }
+}
+
+Object.assign(LANGUAGES, EXTRA_LANGUAGES);
+for (const [language, topics] of Object.entries(EXTRA_ANSWERS)) {
+  const topicIndexes = Object.fromEntries(Object.keys(TOPICS).filter(topic => topic !== 'all').map(topic => [topic, 0]));
+  PHRASES[language] = PHRASES.en.map((source, index) => {
+    const topicIndex = topicIndexes[source.topic]++;
+    const answers = topics[source.topic];
+    if (!answers || answers.length !== 15) throw new Error(`${language}/${source.topic} precisa de 15 traduções.`);
+    const phrase = lesson(`${language}${index + 1}`, source.prompt, answers[topicIndex], source.hint, source.emoji, source.topic, source.context);
+    if (language === 'zh') phrase.reading = EXTRA_READINGS.zh[source.topic][topicIndex][0];
+    if (language === 'ko') phrase.reading = answers[topicIndex].map(romanizeKorean).join(' ');
+    if (language === 'ar') phrase.reading = EXTRA_READINGS.ar[source.topic][topicIndex][0];
+    return phrase;
+  });
 }

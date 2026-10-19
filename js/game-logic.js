@@ -112,7 +112,7 @@ export function loadState(storage, now = Date.now()) {
     const parsed = JSON.parse(raw);
     if (parsed?.version !== 1) return createInitialState(now);
     const safe = { ...createInitialState(now), ...parsed };
-    safe.language = ['en', 'es', 'fr', 'ja', 'ru'].includes(safe.language) ? safe.language : 'en';
+    safe.language = ['en', 'es', 'fr', 'ja', 'ru', 'de', 'it', 'zh', 'ko', 'ar'].includes(safe.language) ? safe.language : 'en';
     safe.currentLesson = Math.max(0, Math.floor(Number(safe.currentLesson) || 0));
     safe.xp = Math.max(0, Number(safe.xp) || 0);
     safe.coins = Math.max(0, Number(safe.coins) || 0);
