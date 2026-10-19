@@ -1,6 +1,7 @@
 import { EXTRA_LANGUAGES, EXTRA_ANSWERS, EXTRA_READINGS, romanizeKorean } from './additional-languages.js';
 import { EXPANSION_ROWS } from './expansion-lessons.js';
 import { EXPANSION_ROWS_MORE } from './expansion-lessons-more.js';
+import { VOCABULARY_ROWS, romanizeJapaneseKana, romanizeRussian, romanizeArabic, TOPIC_LABELS } from './vocabulary-expansion.js';
 
 export const LANGUAGES = {
   en: { label: 'Inglês', locale: 'en-US', flag: '🇬🇧' },
@@ -558,5 +559,47 @@ for (const row of EXTRA_LESSONS) {
     if (language === 'ko') phrase.reading = romanizeKorean(answer.join(' '));
     if (language === 'ar') phrase.reading = row.arReading;
     PHRASES[language].push(phrase);
+  }
+}
+
+const VOCABULARY_LANGUAGES = ['en', 'es', 'fr', 'ja', 'ru', 'de', 'it', 'zh', 'ko', 'ar'];
+if (VOCABULARY_ROWS.length !== 750) throw new Error(`Esperados 750 cartões novos de vocabulário, encontrados ${VOCABULARY_ROWS.length}.`);
+for (const topic of Object.keys(TOPICS).filter(topic => topic !== 'all')) {
+  const topicCount = VOCABULARY_ROWS.filter(row => row.topic === topic).length;
+  if (topicCount !== 75) throw new Error(`O tema ${topic} precisa de 75 novos cartões, mas tem ${topicCount}.`);
+}
+
+for (const row of VOCABULARY_ROWS) {
+  const guidance = TOPIC_GUIDANCE[row.topic];
+  for (const language of VOCABULARY_LANGUAGES) {
+    const answer = language === 'ja'
+      ? [row.ja]
+      : language === 'zh'
+        ? tokenizeChinese(row.zh)
+        : row[language].split(' ');
+    const phrase = lesson(
+      `${language}${PHRASES[language].length + 1}`,
+      row.promptWord,
+      answer,
+      `Vocabulário de ${TOPIC_LABELS[row.topic]}. Leia a palavra e observe seu uso no dia a dia.`,
+      guidance.emoji,
+      row.topic,
+      `Cartão de vocabulário de ${TOPIC_LABELS[row.topic]}. Ouça a pronúncia e repita o termo em voz alta.`
+    );
+    phrase.kind = 'vocabulary';
+    if (language === 'ja') phrase.reading = romanizeJapaneseKana(answer.join(''));
+    if (language === 'ru') phrase.reading = romanizeRussian(answer.join(' '));
+    if (language === 'zh') phrase.reading = row.zhReading;
+    if (language === 'ko') phrase.reading = romanizeKorean(answer.join(' '));
+    if (language === 'ar') phrase.reading = romanizeArabic(answer.join(' '));
+    PHRASES[language].push(phrase);
+  }
+}
+
+for (const [language, phrases] of Object.entries(PHRASES)) {
+  if (phrases.length !== 1000) throw new Error(`${language} deve ter exatamente 1.000 lições; foram encontradas ${phrases.length}.`);
+  for (const topic of Object.keys(TOPICS).filter(topic => topic !== 'all')) {
+    const topicCount = phrases.filter(phrase => phrase.topic === topic).length;
+    if (topicCount !== 100) throw new Error(`${language}/${topic} deve ter exatamente 100 lições; foram encontradas ${topicCount}.`);
   }
 }
